@@ -11634,13 +11634,9 @@ router.post('/PayoutspaypalPayment', function(req, res, next){
 
     paypal.configure({
         'mode': 'sandbox', //sandbox or live
-        'client_id': '',
-        'client_secret': '',
-        'headers' : {
-            'custom': 'header'
-        }
+        'client_id': 'AZ3bLHRexV9jpbKPNGlDyBedLrM2J2FcKUn4NAN7AnY8zdNrLTC7qZxNooTxP7EEATD4mrQUm-tg5mgB',
+        'client_secret': 'EH9F2rDO-n2AFLuYBWjCRJ-Or4_9MDiMzWmh-G1xRCXUxWYYa3inM9UHIWhd5hHrKSe0VHPj4w2Ifqpj'
     });
-
     var sender_batch_id = Math.random().toString(36).substring(9);
 
     var create_payout_json = {
