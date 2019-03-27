@@ -11634,8 +11634,11 @@ router.post('/PayoutspaypalPayment', function(req, res, next){
 
     paypal.configure({
         'mode': 'sandbox', //sandbox or live
-        'client_id': 'AZ3bLHRexV9jpbKPNGlDyBedLrM2J2FcKUn4NAN7AnY8zdNrLTC7qZxNooTxP7EEATD4mrQUm-tg5mgB',
-        'client_secret': 'EH9F2rDO-n2AFLuYBWjCRJ-Or4_9MDiMzWmh-G1xRCXUxWYYa3inM9UHIWhd5hHrKSe0VHPj4w2Ifqpj'
+        'client_id': '',
+        'client_secret': '',
+        'headers' : {
+            'custom': 'header'
+        }
     });
 
     var sender_batch_id = Math.random().toString(36).substring(9);
@@ -11652,7 +11655,7 @@ router.post('/PayoutspaypalPayment', function(req, res, next){
                     "value": 0.5,
                     "currency": "USD"
                 },
-                "receiver": "karammah28@gmail.com",
+                "receiver": "karammah5@gmail.com",
                 "note": "Thank you.",
                 "sender_item_id": "item_3"
             }
@@ -11738,6 +11741,73 @@ router.post('/paypalPayment', function(req, res, next){
     });
 
 });
+
+router.post('/paypalPaymentcard', function(req, res, next){
+
+    paypal.configure({
+        'mode': 'sandbox', //sandbox or live
+        'client_id': 'AZ3bLHRexV9jpbKPNGlDyBedLrM2J2FcKUn4NAN7AnY8zdNrLTC7qZxNooTxP7EEATD4mrQUm-tg5mgB',
+        'client_secret': 'EH9F2rDO-n2AFLuYBWjCRJ-Or4_9MDiMzWmh-G1xRCXUxWYYa3inM9UHIWhd5hHrKSe0VHPj4w2Ifqpj'
+    });
+    var create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "credit_card",
+            "funding_instruments": [{
+                "credit_card": {
+                    "type": "visa",
+                    "number": "4417119669820331",
+                    "expire_month": "11",
+                    "expire_year": "2020",
+                    "cvv2": "874",
+                    "first_name": "Joe",
+                    "last_name": "Shopper",
+                    "billing_address": {
+                        "line1": "52 N Main ST",
+                        "city": "Johnstown",
+                        "state": "OH",
+                        "postal_code": "43210",
+                        "country_code": "US"
+                    }
+                }
+            }]
+        },
+        "transactions": [{
+            "amount": {
+                "total": "7",
+                "currency": "USD",
+                "details": {
+                    "subtotal": "5",
+                    "tax": "1",
+                    "shipping": "1"
+                }
+            },
+            "description": "This is the payment transaction description."
+        }]
+    };
+
+    paypal.payment.create(create_payment_json, function (error, payment) {
+        if(error)
+        {console.log(util.inspect(error, false, null));
+            return res.status(200).json({
+                message: "failed",
+
+
+            });
+        }
+        else {
+            console.log(util.inspect(payment, false, null));
+
+            return res.status(200).json({
+                message: "success",
+
+
+            });
+        }
+    });
+
+});
+
 
 router.post('/braintreePayment', function(req, res, next) {
 
