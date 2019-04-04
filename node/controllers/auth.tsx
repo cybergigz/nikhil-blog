@@ -321,7 +321,7 @@ function  Verifiy_Email(UserEmail,Password,userName) {
 
 
 
-            sgMail.setApiKey('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');
+            sgMail.setApiKey('');
     const msg = {
         to: UserEmail,
         from: 'karammah5@gmail.com',
