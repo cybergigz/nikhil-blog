@@ -1,0 +1,38 @@
+{
+  "name": "india_blog",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "animate.css": "^3.7.0",
+    "axios": "^0.18.0",
+    "get-json": "^1.0.1",
+    "jquery": "^3.3.1",
+    "react": "^16.8.6",
+    "react-animate-on-scroll": "^2.1.5",
+    "react-animated-css": "^1.0.4",
+    "react-dom": "^16.8.6",
+    "react-owl-carousel": "^2.3.1",
+    "react-owl-carousel2": "^0.3.0",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "2.1.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "expose-loader": "^0.7.5"
+  }
+}
