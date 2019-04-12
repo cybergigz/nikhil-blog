@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
-import carousel from "./carousel.js";
+
 
 import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
