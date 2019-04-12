@@ -30,7 +30,7 @@ class Routes extends React.Component {
 
                 <Route
                     render={function () {
-                        return <h1>Not Found</h1>;
+                        window.location.href="/";
                     }}
                 />	      </Switch>
 

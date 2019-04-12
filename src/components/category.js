@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 
 import {Animated} from "react-animated-css";
 import {list_of_category_type} from './../config/config';
+import ScrollAnimation from 'react-animate-on-scroll';
+
+import "animate.css/animate.min.css";
 
 
 class category extends Component {
@@ -50,6 +53,7 @@ this.xxname=xname;
                 let mainmenu =[]
                 for (var i=0;i<data.results.length;i++)
                 {
+                    console.log(data.results[i].created[0].value)
                     if (data.results[i].field_video_image !=null)
                     {
 
@@ -58,7 +62,7 @@ this.xxname=xname;
 
                                 title: data.results[i].title[0].value,
                                 image: data.results[i].field_video_image[0].url,
-                                date: "ss"
+                                date: data.results[i].created[0].value
 
                             };
                             mainmenu.push(blogs);
@@ -70,7 +74,7 @@ this.xxname=xname;
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
                                 image: data.results[i].field_rjs_image[0].url,
-                                date: "ss"
+                                date: data.results[i].created[0].value
 
                             };
                             mainmenu.push(blogs);
@@ -105,7 +109,9 @@ this.xxname=xname;
 
                                     <div className="col-md-12">
                                         {this.state.blogs.map((item,index) => (
-                                            <div key={index} className="post-entry-horzontal">
+                                                    <ScrollAnimation key={index} animateIn="fadeIn">
+
+                                            <div  className="post-entry-horzontal">
                                                 <Link to={"Blog-Single?id="+item.nid} style={{width: '100%'}}>
                                                     <div className="image"
                                                          style={{
@@ -113,13 +119,14 @@ this.xxname=xname;
                                                     <span className = "text" >
                                                          <div className = "post-meta" >
                                                          <span className = "category" > {this.state.name} </span>
-                                                         <span className="mr-2">March 15, 2018 </span> &bullet;
+                                                         <span className="mr-2">{item.date} </span> 
                                                              <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
                                                          </div>
                                                          <h2>{item.title}</h2>
                                                          </span>
                                                 </Link>
                                             </div>
+            </ScrollAnimation>
                                         ))}
 
 

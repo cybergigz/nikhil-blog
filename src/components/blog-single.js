@@ -16,6 +16,7 @@ class blogsingle extends Component {
             image:"",
             date:"",
             video:"",
+            body:"",
             type:""
 
         }
@@ -31,78 +32,52 @@ class blogsingle extends Component {
             .then(blob => blob.json())
             .then(data => {
                 console.log(data)
-                var nameType="";
+                var nameType="",image="",body="",typeId="",video="";
+            if(data.field_video_category !=null)
+               {
+                  typeId= data.field_video_category[0].target_id;
+                   if(data.field_rjs_video.length >0)
+                      {
+                                         video=data.field_rjs_video[0].value;
+
+                      }
+                 
+                   image=data.field_video_image[0].url;
+               
+               }
+               else
+               {
+                typeId= data.field_category[0].target_id;
+                   body=data.field_reactjs_body[0].value;
+                   image=data.field_rjs_image[0].url;
+               }
+            
 
 
-                fetch(category_type(data.field_video_category[0].target_id))
+                fetch(category_type(typeId))
                     .then(blob2 => blob2.json())
                     .then(data2 => {
 
                         nameType=data2.name[0].value;
-                        if (data.field_video_image !=null)
-                        {
-
-                            if (data.field_rjs_video[0] !=null) {
+                       
                                 let blog={
                                     nid:data.nid[0].value,
-
                                     title:data.title[0].value,
-                                    image:data.field_video_image[0].url,
+                                    image:image,
                                     date:data.created[0].value,
-                                    video:data.field_rjs_video[0].value,
+                                    video:video,
+                                    body:body,
                                     type:nameType
 
 
                                 };
                                 this.setState({blog:blog})
-                            }
-                            else {
-                                    let blog = {
-                                        nid: data.nid[0].value,
-
-                                        title: data.title[0].value,
-                                        image: data.field_video_image[0].url,
-                                        date: data.created[0].value,
-                                        video: "",
-                                        type: nameType
+                            
+                     
 
 
-                                    };
-
-                                this.setState({blog:blog})
-                            }
-
-
-                        }
-                        else {
-                            if (data.field_rjs_video[0] != null) {
-                                let blog = {
-                                    nid: data.nid[0].value,
-                                    title: data.title[0].value,
-                                    image: data.field_rjs_image[0].url,
-                                    date: data.created[0].value,
-                                    video: data.field_rjs_video[0].value,
-                                    type: nameType
-
-
-                                };
-                                this.setState({blog: blog})
-                            }
-                            else
-                            {
-                                let blog = {
-                                    nid: data.nid[0].value,
-                                    title: data.title[0].value,
-                                    image: data.field_rjs_image[0].url,
-                                    date: data.created[0].value,
-                                    video: "",
-                                    type: nameType
-
-
-                                };
-                                this.setState({blog: blog})
-                            }
-                        }
+                        
+                   
 
                     })
 
@@ -137,8 +112,15 @@ class blogsingle extends Component {
                                                 allowFullScreen="allowfullscreen"
                                                 src={this.state.blog.video}></iframe>
                                                     :
-                                                    <p></p>
-
+        (this.state.blog.body.length > 0)?
+                                                    <div class="post-content-body">
+              <p>
+                                                        {this.state.blog.body}</p>
+            
+    
+            </div>
+        :
+        <p></p>
                                             }
 
                                             <img src={this.state.blog.image} alt="Image placeholder"  className="img-fluid"/>
