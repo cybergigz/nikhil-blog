@@ -33,6 +33,7 @@ class blogsingle extends Component {
             .then(data => {
                 console.log(data)
                 var nameType="",image="",body="",typeId="",video="";
+            var fieldVideo=data.field_video_category;
             if(data.field_video_category !=null)
                {
                   typeId= data.field_video_category[0].target_id;
