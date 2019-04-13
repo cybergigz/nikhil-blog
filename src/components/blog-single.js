@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
 import Sidebar from "./sidebar.js";
-
 import {Animated} from "react-animated-css";
 import {category_details} from "../config/config";
 import {category_type} from "../config/config";

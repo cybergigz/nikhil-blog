@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
-<<<<<<< HEAD
 import Sidebar from "./sidebar.js";
-=======
->>>>>>> 62f75f50158d67eca6cbe00ba4d7ec1caf3e08f9
-
-
 import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
 
