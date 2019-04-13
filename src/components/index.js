@@ -79,9 +79,6 @@ pageChange=(index)=>{
 
         }
     
-    var pagerListSelected=document.getElementsByClassName("pagerclass"+(index.index+1));
-   // console.log(pagerListSelected);
-  // pagerListSelected[0].classList.add("active");
    this.fetchDataAPI(index.index);
 }
 nextClick=()=>{

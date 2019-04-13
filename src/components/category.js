@@ -40,14 +40,65 @@ let xxname="";
         NumberOfPage:0,
         pageSelected:0,
         itemPerPage:0,
-        pager:{}
+        pager:{"count":"","pages":0,"items_per_page":0,"current_page":0}
     };
 
 
 
 
     componentWillMount=()=> {
-        var xId = GetParameterValues('id');
+       this.pageChange({index:0});
+
+        
+    }
+    componentDidUpdate=()=>{
+
+    var index=this.state.pageSelected;
+      var pagerListSelected=document.getElementsByClassName("pagerclass"+(index+1));
+    if(pagerListSelected[0] !=undefined){
+           pagerListSelected[0].classList.add("active");
+
+       }
+}
+    pageChange=(index)=>{
+   let itemPerPage=this.state.itemPerPage;
+  this.setState({pageSelected:index.index});
+        var pagerList=document.getElementsByClassName("pagerclass");
+  for(var i=0;i<pagerList.length;i++)
+        {
+               pagerList[i].classList.remove("active");
+
+        }
+        
+           this.fetchDataAPI(index.index);
+
+    
+ 
+}
+nextClick=()=>{
+         const itemPerPage=this.state.itemPerPage;
+
+            const numOfPage=this.state.pager.pages;
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected+1<numOfPage)
+       {
+
+       this.pageChange({index:pageSelected+1});
+       }
+    
+    
+}
+prevClick=()=>{
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected>0)
+       {
+
+
+       this.pageChange({index:pageSelected-1});
+       }
+}
+fetchDataAPI=(page_num)=>{
+     var xId = GetParameterValues('id');
         var xname = GetParameterValues('name');
 this.xxname=xname;
         if (xId==null)
@@ -62,7 +113,7 @@ this.xxname=xname;
               var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
                      var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
      
-     fetch(list_of_category_type(xId))
+     fetch(list_of_category_type(xId,page_num))
             .then(blob => blob.json())
             .then(data => {
                 if ( data.results.length==0)
@@ -109,80 +160,17 @@ this.xxname=xname;
                 }
                 this.setState({blogs:mainmenu})
 
-this.pageChange({index:0});
             })
  });
-        
-    }
-    
-    pageChange=(index)=>{
-   let itemPerPage=this.state.itemPerPage;
-  this.setState({pageSelected:index.index});
-        var pagerList=document.getElementsByClassName("pagerclass");
-  for(var i=0;i<pagerList.length;i++)
-        {
-               pagerList[i].classList.remove("active");
-
-        }
-    
-    var pagerListSelected=document.getElementsByClassName("pagerclass"+(index.index+1));
-   pagerListSelected[0].classList.add("active");
-    let arrayOfPosts=[];
-        var item=index.index,itemCompare=0;
-        if(item!=0)
-            {
-                itemCompare=index.index+itemPerPage-1;
-            }
-    
-    for(var i=itemCompare;i<itemCompare+itemPerPage;i++)
-        {
-            console.log(this.state.blogs.length);
-                        console.log(i);
-
-            if(i==this.state.blogs.length)
-               {
-break;
-               }
-            else
-                {
-  arrayOfPosts.push(this.state.blogs[i]);
-   
-                }
-
-        
-    }
-    this.setState({blogsPager:arrayOfPosts})
-}
-nextClick=()=>{
-       const itemPerPage=this.state.itemPerPage;
-
-            const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
-    var pageSelected=this.state.pageSelected;
-    if(pageSelected+1<numOfPage)
-       {
-
-       this.pageChange({index:pageSelected+1});
-       }
-    
     
 }
-prevClick=()=>{
-    var pageSelected=this.state.pageSelected;
-    if(pageSelected>0)
-       {
-
-
-       this.pageChange({index:pageSelected-1});
-       }
-}
-
     render() {
     
-         const itemPerPage=this.state.itemPerPage;
+     const itemPerPage=this.state.itemPerPage;
                const ArrayOfPage=[];
 
         if(itemPerPage>0){
-                 const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
+                 const numOfPage=this.state.pager.pages;
        for(var x=1;x<=numOfPage;x++)
            {
                ArrayOfPage.push(x);
@@ -205,7 +193,7 @@ prevClick=()=>{
                                 <div className="row mb-5 mt-5">
 
                                     <div className="col-md-12">
-                                        {this.state.blogsPager.map((item,index) => (
+                                        {this.state.blogs.map((item,index) => (
                                                     <ScrollAnimation key={index} animateIn="fadeIn">
 
                                             <div  className="post-entry-horzontal">
