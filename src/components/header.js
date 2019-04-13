@@ -36,9 +36,11 @@ for (var i=0;i<data.results.length;i++)
     {
         let mapIndex=map[data.results[i].parent[0].target_id];
 
-
         if (mapIndex!=undefined)
-{        map2[data.results[i].tid[0].value] = i; // initialize the map
+{  
+    console.log(mapIndex);
+  
+    map2[data.results[i].tid[0].value] = i; // initialize the map
 
 
     let item=  {
@@ -47,7 +49,12 @@ for (var i=0;i<data.results.length;i++)
         parentId:data.results[i].parent[0].target_id,
         children:[]
     };
-    mainmenu[mapIndex].children.push(item);
+    console.log(mainmenu[mapIndex]);
+    if(mainmenu[mapIndex] !=undefined)
+       {
+           mainmenu[mapIndex].children.push(item);
+
+       }
 
 }
 

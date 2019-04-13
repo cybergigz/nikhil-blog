@@ -115,7 +115,7 @@ class blogsingle extends Component {
                                                 src={this.state.blog.video}></iframe>
                                                     :
         (this.state.blog.body.length > 0)?
-                                                    <div class="post-content-body">
+                                                    <div className="post-content-body">
               <p>
                                                         {this.state.blog.body}</p>
             
