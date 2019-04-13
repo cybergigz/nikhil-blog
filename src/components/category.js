@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
+import Sidebar from "./sidebar.js";
+
 import { Link } from "react-router-dom";
 
 import {Animated} from "react-animated-css";
@@ -26,6 +28,17 @@ let xxname="";
             date:"",
 
         }]
+    ,
+          blogsPager:[{
+            nid:0,
+            title:"",
+            image:"",
+            date:"",
+
+        }],
+        
+        NumberOfPage:0,
+        pageSelected:0
     };
 
 
@@ -88,11 +101,70 @@ this.xxname=xname;
                 this.setState({blogs:mainmenu})
                 console.log(mainmenu);
 
-
+this.pageChange({index:0});
             })
     }
+    
+    pageChange=(index)=>{
+      // alert(index.index);
+    this.setState({pageSelected:index.index});
+        var pagerList=document.getElementsByClassName("pagerclass");
+  for(var i=0;i<pagerList.length;i++)
+        {
+               pagerList[i].classList.remove("active");
+
+        }
+    
+    var pagerListSelected=document.getElementsByClassName("pagerclass"+(index.index+1));
+   pagerListSelected[0].classList.add("active");
+    let arrayOfPosts=[];
+        var item=index.index,itemCompare=0;
+        if(item!=0)
+            {
+                itemCompare=index.index+2;
+            }
+    
+    for(var i=itemCompare;i<=itemCompare+2;i++)
+        {
+            if(i==this.state.blogs.length)
+               {
+break;
+               }
+                                       arrayOfPosts.push(this.state.blogs[i]);
+
+        
+    }
+    this.setState({blogsPager:arrayOfPosts})
+}
+nextClick=()=>{
+           const numOfPage=Math.ceil(this.state.blogs.length/3);
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected+1<numOfPage)
+       {
+
+       this.pageChange({index:pageSelected+1});
+       }
+    
+    
+}
+prevClick=()=>{
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected>0)
+       {
+
+
+       this.pageChange({index:pageSelected-1});
+       }
+}
 
     render() {
+           const numOfPage=Math.ceil(this.state.blogs.length/3);
+       const ArrayOfPage=[];
+       for(var x=1;x<=numOfPage;x++)
+           {
+               ArrayOfPage.push(x);
+               
+           }
         return (
             <div>
                 <Header/>
@@ -108,7 +180,7 @@ this.xxname=xname;
                                 <div className="row mb-5 mt-5">
 
                                     <div className="col-md-12">
-                                        {this.state.blogs.map((item,index) => (
+                                        {this.state.blogsPager.map((item,index) => (
                                                     <ScrollAnimation key={index} animateIn="fadeIn">
 
                                             <div  className="post-entry-horzontal">
@@ -131,17 +203,21 @@ this.xxname=xname;
 
 
                                                                                          </div>
-                                                                                         </div>
+                                                                                  </div>
 
-                                                                                         <div className="row">
-                                                                                         <div className="col-md-12 text-center">
-                                                                                         <nav aria-label="Page navigation" className="text-center">
-                                                                                         <ul className="pagination">
-                                                                                         <li className="page-item  active"><a className="page-link" href="#">Prev</a></li>
-                                                                                         <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                                                                         <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                                                                         <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                                                                         <li className="page-item"><a className="page-link" href="#">Next</a></li>
+                              <div className="row">
+                     <div className="col-md-12 text-center">
+                     <nav aria-label="Page navigation" className="text-center">
+                     <ul className="pagination">
+                                 <li className="page-item "><a className="page-link" onClick={()=>this.prevClick()}>Prev</a></li>
+                                          {ArrayOfPage.map((item, index) => (
+                 <li key={index} className={"page-item pagerclass pagerclass"+item}><a className="page-link" onClick={()=>this.pageChange({index})}>{item}</a></li>
+                                     
+
+))}
+                 
+                 <li className="page-item"><a className="page-link" onClick={()=>this.nextClick()}>Next</a>
+                                                </li>
                                                                                          </ul>
                                                                                          </nav>
                                                                                          </div>
@@ -152,106 +228,7 @@ this.xxname=xname;
                                                                                          </div>
 
 
-                                                                                         <div className="col-md-12 col-lg-4 sidebar">
-                                                                                         <div className="sidebar-box search-form-wrap">ٍ                                                                                <form action="#" className="search-form">
-                                                                                         <div className="form-group">
-                                                                                         <span className="icon fa fa-search"></span>
-                                                                                         <input type="text" className="form-control" id="s" placeholder="Type a keyword and hit enter"/>
-                                                                                         </div>
-                                                                                         </form>
-                                                                                         </div>
-                                                                                         <div className="sidebar-box">
-                                                                                         <div className="bio text-center">
-                                                                                         <img src="images/person_1.jpg" alt="Image Placeholder" className="img-fluid"/>
-                                                                                         <div className="bio-body">
-                                                                                         <h2>Meagan Smith</h2>
-                                                                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem facilis sunt repellendus excepturi beatae porro debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
-                                                                                         <p><a href="#" className="btn btn-primary btn-sm">Read my bio</a></p>
-                                                                                         <p className="social">
-                                                                                         <a href="#" className="p-2"><span className="fa fa-facebook"></span></a>
-                                                                                         <a href="#" className="p-2"><span className="fa fa-twitter"></span></a>
-                                                                                         <a href="#" className="p-2"><span className="fa fa-instagram"></span></a>
-                                                                                         <a href="#" className="p-2"><span className="fa fa-youtube-play"></span></a>
-                                                                                         </p>
-                                                                                         </div>
-                                                                                         </div>
-                                                                                         </div>
-                                                                                         <div className="sidebar-box">
-                                                                                         <h3 className="heading">Popular Posts</h3>
-                                                                                         <div className="post-entry-sidebar">
-                                                                                         <ul>
-                                                                                         <li>
-                                                                                         <a href="">
-                                                                                         <img src="images/img_2.jpg" alt="Image placeholder" className="mr-4"/>
-                                                                                         <div className="text">
-                                                                                         <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
-                                                                                         <div className="post-meta">
-                                                                                         <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                                                         </div>
-                                                                                         </div>
-                                                                                         </a>
-                                                                                         </li>
-                                                                                         <li>
-                                                                                         <a href="">
-                                                                                         <img src="images/img_4.jpg" alt="Image placeholder" className="mr-4"/>
-                                                                                         <div className="text">
-                                                                                         <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
-                                                                                         <div className="post-meta">
-                                                                                         <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                                                         </div>
-                                                                                         </div>
-                                                                                         </a>
-                                                                                         </li>
-                                                                                         <li>
-                                                                                         <a href="">
-                                                                                         <img src="images/img_12.jpg" alt="Image placeholder" className="mr-4"/>
-                                                                                         <div className="text">
-                                                                                         <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
-                                                                                         <div className="post-meta">
-                                                                                         <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                                                         </div>
-                                                                                         </div>
-                                                                                         </a>
-                                                                                         </li>
-                                                                                         </ul>
-                                                                                         </div>
-                                                                                         </div>
-
-
-                                                                                         <div className="sidebar-box">
-                                                                                         <h3 className="heading">Categories</h3>
-
-                                                                                         <ul className="categories">
-                                                                                         <li><a href="#">Courses <span>(12)</span></a></li>
-                                                                                         <li><a href="#">News <span>(22)</span></a></li>
-                                                                                         <li><a href="#">Design <span>(37)</span></a></li>
-                                                                                         <li><a href="#">HTML <span>(42)</span></a></li>
-                                                                                         <li><a href="#">Web Development <span>(14)</span></a></li>
-                                                                                         </ul>
-                                                                                         </div>
-
-
-                                                                                         <div className="sidebar-box">
-                                                                                         <h3 className="heading">Tags</h3>
-                                                                                         <ul className="tags">
-                                                                                         <li><a href="#">Travel</a></li>
-                                                                                         <li><a href="#">Adventure</a></li>
-                                                                                         <li><a href="#">Food</a></li>
-                                                                                         <li><a href="#">Lifestyle</a></li>
-                                                                                         <li><a href="#">Business</a></li>
-                                                                                         <li><a href="#">Freelancing</a></li>
-                                                                                         <li><a href="#">Travel</a></li>
-                                                                                         <li><a href="#">Adventure</a></li>
-                                                                                         <li><a href="#">Food</a></li>
-                                                                                         <li><a href="#">Lifestyle</a></li>
-                                                                                         <li><a href="#">Business</a></li>
-                                                                                         <li><a href="#">Freelancing</a></li>
-                                                                                         </ul>
-                                                                                         </div>
-                                                                                         </div>
+                                                                                         <Sidebar/>
 
                                                                                          </div>
                                                                                          </div>
