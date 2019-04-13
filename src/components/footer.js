@@ -1,6 +1,69 @@
 import React, { Component } from 'react';
+import {all_css_posts} from './../config/config';
+import { Link } from "react-router-dom";
 
 class Footer extends Component {
+     state={
+        blogs:[{
+            nid:0,
+            title:"",
+            image:"",
+            date:"",
+
+        }]
+   
+        
+     
+    };
+
+    componentWillMount=()=> {
+
+        fetch(all_css_posts)
+            .then(blob => blob.json())
+            .then(data => {
+          
+                let mainmenu =[]
+                for (var i=0;i<data.results.length;i++)
+                {
+                    if(i==3){
+                        break;
+                    }
+                    if (data.results[i].field_video_image !=null)
+                    {
+
+                            let blogs = {
+                                nid: data.results[i].nid[0].value,
+
+                                title: data.results[i].title[0].value,
+                                image: data.results[i].field_video_image[0].url,
+                                date: data.results[i].created[0].value
+
+                            };
+                            mainmenu.push(blogs);
+
+                    }
+                    else
+                    {
+                            let blogs = {
+                                nid: data.results[i].nid[0].value,
+                                title: data.results[i].title[0].value,
+                                image: data.results[i].field_rjs_image[0].url,
+                                date: data.results[i].created[0].value
+
+                            };
+                            mainmenu.push(blogs);
+
+                    }
+
+
+
+
+                }
+                this.setState({blogs:mainmenu})
+
+            })
+    }
+    
     render() {
         return (
             <div>
@@ -23,54 +86,23 @@ class Footer extends Component {
                                         <h3>Latest Post</h3>
                                         <div className="post-entry-sidebar">
                                             <ul>
-                                                <li>
-                                                    <a href="">
-                                                        <img src="images/img_6.jpg" alt="Image placeholder"
+            {this.state.blogs.map((item,index) => (
+                                                <li key={index}>
+                                                    <Link to={"Blog-Single?id="+item.nid}>
+                                                        <img src={item.image} style={{height: "61px"}}  alt="Image placeholder"
                                                              className="mr-4"/>
                                                             <div className="text">
-                                                                <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                    Sandals</h4>
+                                                                <h4>{item.title}</h4>
                                                                 <div className="post-meta">
                                                                     <span
-                                                                        className="mr-2">March 15, 2018 </span> &bullet;
+                                                                        className="mr-2">{item.date} </span>
                                                                     <span className="ml-2"><span
                                                                         className="fa fa-comments"></span> 3</span>
                                                                 </div>
                                                             </div>
-                                                    </a>
+                                                    </Link>
                                                 </li>
-                                                <li>
-                                                    <a href="">
-                                                        <img src="images/img_3.jpg" alt="Image placeholder"
-                                                             className="mr-4"/>
-                                                            <div className="text">
-                                                                <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                    Sandals</h4>
-                                                                <div className="post-meta">
-                                                                    <span
-                                                                        className="mr-2">March 15, 2018 </span> &bullet;
-                                                                    <span className="ml-2"><span
-                                                                        className="fa fa-comments"></span> 3</span>
-                                                                </div>
-                                                            </div>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="">
-                                                        <img src="images/img_4.jpg" alt="Image placeholder"
-                                                             className="mr-4"/>
-                                                            <div className="text">
-                                                                <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                    Sandals</h4>
-                                                                <div className="post-meta">
-                                                                    <span
-                                                                        className="mr-2">March 15, 2018 </span> &bullet;
-                                                                    <span className="ml-2"><span
-                                                                        className="fa fa-comments"></span> 3</span>
-                                                                </div>
-                                                            </div>
-                                                    </a>
-                                                </li>
+                                          ))}
                                             </ul>
                                         </div>
                                     </div>
