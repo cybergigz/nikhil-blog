@@ -38,7 +38,6 @@ for (var i=0;i<data.results.length;i++)
 
         if (mapIndex!=undefined)
 {  
-    console.log(mapIndex);
   
     map2[data.results[i].tid[0].value] = i; // initialize the map
 
@@ -49,7 +48,6 @@ for (var i=0;i<data.results.length;i++)
         parentId:data.results[i].parent[0].target_id,
         children:[]
     };
-    console.log(mainmenu[mapIndex]);
     if(mainmenu[mapIndex] !=undefined)
        {
            mainmenu[mapIndex].children.push(item);
@@ -68,7 +66,6 @@ this.setState({menuData:mainmenu})
 
             })
             .catch(e => {
-                console.log(e);
                 return e;
             });
 

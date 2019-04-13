@@ -6,12 +6,11 @@ import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
 
 import ScrollAnimation from 'react-animate-on-scroll';
-import {all_posts,category_type} from './../config/config';
+import {all_posts,category_type,setting_api} from './../config/config';
 import OwlCarousel, { Options } from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import "animate.css/animate.min.css";
-import axios from 'axios';
 
 
 
@@ -43,17 +42,25 @@ class index extends Component {
         }],
         
         NumberOfPage:0,
-        pageSelected:0
+        pageSelected:0,
+        itemPerPage:0
         
     };
    
-componentDidMount=()=>
+componentWillMount=()=>
 {
                       let mainmenu =[];
-
-        fetch(all_posts)
+        fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video;
+            
+                 fetch(all_posts)
             .then(blob => blob.json())
             .then(data => {
+                     this.setState({itemPerPage:data.pager.items_per_page})
              
             var typeId="",typename="",image="";
                 for (var i=0;i<data.results.length;i++)
@@ -111,6 +118,10 @@ componentDidMount=()=>
 
 
             });
+
+        });
+
+   
          console.log(this.state.blogs);
 
       
@@ -124,6 +135,7 @@ componentDidUpdate=()=>{
 }
 
 pageChange=(index)=>{
+    let itemPerPage=this.state.itemPerPage;
   this.setState({pageSelected:index.index});
         var pagerList=document.getElementsByClassName("pagerclass");
   for(var i=0;i<pagerList.length;i++)
@@ -138,10 +150,10 @@ pageChange=(index)=>{
         var item=index.index,itemCompare=0;
         if(item!=0)
             {
-                itemCompare=index.index+3;
+                itemCompare=index.index+itemPerPage-1;
             }
     
-    for(var i=itemCompare;i<itemCompare+4;i++)
+    for(var i=itemCompare;i<itemCompare+itemPerPage;i++)
         {
             console.log(this.state.blogs.length);
                         console.log(i);
@@ -161,7 +173,9 @@ break;
     this.setState({blogsPager:arrayOfPosts})
 }
 nextClick=()=>{
-            const numOfPage=Math.ceil(this.state.blogs.length/4);
+     const itemPerPage=this.state.itemPerPage;
+
+            const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
     var pageSelected=this.state.pageSelected;
     if(pageSelected+1<numOfPage)
        {
@@ -185,14 +199,19 @@ prevClick=()=>{
 
     render() {
       
- 
-       const numOfPage=Math.ceil(this.state.blogs.length/4);
-       const ArrayOfPage=[];
+ const itemPerPage=this.state.itemPerPage;
+               const ArrayOfPage=[];
+
+        if(itemPerPage>0){
+                 const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
        for(var x=1;x<=numOfPage;x++)
            {
                ArrayOfPage.push(x);
                
            }
+           
+           }
+  
 
                 
         const options = {

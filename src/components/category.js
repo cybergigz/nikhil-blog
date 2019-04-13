@@ -6,7 +6,7 @@ import Sidebar from "./sidebar.js";
 import { Link } from "react-router-dom";
 
 import {Animated} from "react-animated-css";
-import {list_of_category_type} from './../config/config';
+import {list_of_category_type,setting_api} from './../config/config';
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import "animate.css/animate.min.css";
@@ -38,7 +38,8 @@ let xxname="";
         }],
         
         NumberOfPage:0,
-        pageSelected:0
+        pageSelected:0,
+        itemPerPage:0
     };
 
 
@@ -53,28 +54,34 @@ this.xxname=xname;
             window.location.href="/";
         }
         this.setState({name:xname})
-
-        fetch(list_of_category_type(xId))
+ fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
+     
+     fetch(list_of_category_type(xId))
             .then(blob => blob.json())
             .then(data => {
-                console.log(data)
                 if ( data.results.length==0)
                 {
                     window.location.href="/";
 
                 }
                 let mainmenu =[]
+         this.setState({itemPerPage:data.pager.items_per_page})
+
                 for (var i=0;i<data.results.length;i++)
                 {
-                    console.log(data.results[i].created[0].value)
-                    if (data.results[i].field_video_image !=null)
+                    if (data.results[i][embded_video_image] !=null)
                     {
 
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
 
                                 title: data.results[i].title[0].value,
-                                image: data.results[i].field_video_image[0].url,
+                                image: data.results[i][embded_video_image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -86,7 +93,7 @@ this.xxname=xname;
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                                image: data.results[i].field_rjs_image[0].url,
+                                image: data.results[i][blog_image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -99,15 +106,16 @@ this.xxname=xname;
 
                 }
                 this.setState({blogs:mainmenu})
-                console.log(mainmenu);
 
 this.pageChange({index:0});
             })
+ });
+        
     }
     
     pageChange=(index)=>{
-      // alert(index.index);
-    this.setState({pageSelected:index.index});
+   let itemPerPage=this.state.itemPerPage;
+  this.setState({pageSelected:index.index});
         var pagerList=document.getElementsByClassName("pagerclass");
   for(var i=0;i<pagerList.length;i++)
         {
@@ -121,23 +129,32 @@ this.pageChange({index:0});
         var item=index.index,itemCompare=0;
         if(item!=0)
             {
-                itemCompare=index.index+2;
+                itemCompare=index.index+itemPerPage-1;
             }
     
-    for(var i=itemCompare;i<=itemCompare+2;i++)
+    for(var i=itemCompare;i<itemCompare+itemPerPage;i++)
         {
+            console.log(this.state.blogs.length);
+                        console.log(i);
+
             if(i==this.state.blogs.length)
                {
 break;
                }
-                                       arrayOfPosts.push(this.state.blogs[i]);
+            else
+                {
+  arrayOfPosts.push(this.state.blogs[i]);
+   
+                }
 
         
     }
     this.setState({blogsPager:arrayOfPosts})
 }
 nextClick=()=>{
-           const numOfPage=Math.ceil(this.state.blogs.length/3);
+       const itemPerPage=this.state.itemPerPage;
+
+            const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
     var pageSelected=this.state.pageSelected;
     if(pageSelected+1<numOfPage)
        {
@@ -158,12 +175,18 @@ prevClick=()=>{
 }
 
     render() {
-           const numOfPage=Math.ceil(this.state.blogs.length/3);
-       const ArrayOfPage=[];
+    
+         const itemPerPage=this.state.itemPerPage;
+               const ArrayOfPage=[];
+
+        if(itemPerPage>0){
+                 const numOfPage=Math.ceil(this.state.blogs.length/itemPerPage);
        for(var x=1;x<=numOfPage;x++)
            {
                ArrayOfPage.push(x);
                
+           }
+           
            }
         return (
             <div>
