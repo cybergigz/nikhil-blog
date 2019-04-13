@@ -39,7 +39,8 @@ let xxname="";
         
         NumberOfPage:0,
         pageSelected:0,
-        itemPerPage:0
+        itemPerPage:0,
+        pager:{}
     };
 
 
@@ -71,6 +72,7 @@ this.xxname=xname;
                 }
                 let mainmenu =[]
          this.setState({itemPerPage:data.pager.items_per_page})
+         this.setState({pager:data.pager})
 
                 for (var i=0;i<data.results.length;i++)
                 {

@@ -29,7 +29,6 @@ class Sidebar extends Component {
             .then(blob2 => blob2.json())
             .then(data2 => {
             var reactjs_blog=data2.types[0].fields,reactjs_video=data2.types[1].fields;
-                          console.log(reactjs_blog);
              
                fetch(all_js_posts)
             .then(blob => blob.json())
