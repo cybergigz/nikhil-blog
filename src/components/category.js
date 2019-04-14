@@ -148,7 +148,7 @@ this.xxname=xname;
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                                image: data.results[i][blog_image][0].url,
+                              //  image: data.results[i][blog_image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -200,10 +200,13 @@ this.xxname=xname;
 
                                             <div  className="post-entry-horzontal">
                                                 <Link to={"Blog-Single?id="+item.nid} style={{width: '100%'}}>
+            { (item.image!=null)?
                                                     <div className="image"
                                                          style={{
                                                              backgroundImage:'url('+ item.image+')'}}></div>
-                                                    <span className = "text" >
+  :<span></span>
+}                                                  
+<span className = "text" >
                                                          <div className = "post-meta" >
                                                          <span className = "category" > {this.state.name} </span>
                                                          <span className="mr-2">{item.date} </span> 
