@@ -41,7 +41,7 @@ class blogsingle extends Component {
             .then(data => {
                 var nameType="",image="",body="",typeId="",video="";
          var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
-                     var embded_video=reactjs_video.embedded_video;
+                     var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
 
             if(data[video_field] !=null)
                {
@@ -54,7 +54,7 @@ class blogsingle extends Component {
 
                       }
                  
-                   image=data[video_field][0].url;
+                   image=data[embded_video_image][0].url;
                
                }
                else
