@@ -67,6 +67,8 @@ componentDidUpdate=()=>{
            pagerListSelected[0].classList.add("active");
 
        }
+                  window.scrollTo(0, 0);
+
 }
 
 pageChange=(index)=>{
