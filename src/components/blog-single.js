@@ -5,6 +5,8 @@ import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import {category_details} from "../config/config";
 import {category_type,setting_api} from "../config/config";
+var getYouTubeID = require('get-youtube-id');
+
 
 
 
@@ -46,7 +48,9 @@ class blogsingle extends Component {
                   typeId= data[video_field][0].target_id;
                    if(data[embded_video].length >0)
                       {
-                                         video=data[embded_video][0].value;
+                          var id = getYouTubeID(data[embded_video][0].value);
+
+                                         video="https://www.youtube.com/embed/"+id+"";
 
                       }
                  
