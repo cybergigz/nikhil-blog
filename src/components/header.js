@@ -71,9 +71,8 @@ if (mapIndex!=undefined)
 
     }
 }
-                      mainmenu=mainmenu.sort();
+                      mainmenu=mainmenu.sort(function(a, b){return a.weight - b.weight});
                     
-mainmenu=mainmenu.reverse();
                      for(var i=0;i<mainmenu.length;i++){
                          if(mainmenu[i].children !=null)
                              {
@@ -83,6 +82,7 @@ mainmenu=mainmenu.reverse();
                              }
                      
                      }
+                     console.log(mainmenu);
                    
 this.setState({menuData:mainmenu})
 
