@@ -55,6 +55,7 @@ class blogsingle extends Component {
                                          video="https://www.youtube.com/embed/"+id+"";
 
                       }
+                   body=data[blog_body][0].value;
                  
                   // image=data[embded_video_image][0].url;
                
