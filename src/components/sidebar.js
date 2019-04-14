@@ -59,7 +59,7 @@ class Sidebar extends Component {
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                                image: data.results[i][reactjs_blog.image][0].url,
+                                //image: data.results[i][reactjs_blog.image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -120,8 +120,11 @@ class Sidebar extends Component {
                         {this.state.blogs.map((item,index) => (
                <li key={index}>
                                                 <Link to={"Blog-Single?id="+item.nid}>
+                         { (item.image!=null)?
                                                     <img src={item.image} style={{height: "61px"}} alt="Image placeholder"
                                                          className="mr-4"/>
+                                                               :<span></span>
+}
                                                         <div className="text">
                                                             <h4>{item.title}</h4>
                                                             <div className="post-meta">

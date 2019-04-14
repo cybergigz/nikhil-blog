@@ -127,7 +127,7 @@ fetchDataAPI=(page_num)=>{
                     if(data.results[i][blog_body_category]!=null)
                         {
                             typeId=data.results[i][blog_body_category][0].target_id;
-                         image=data.results[i][blog_image][0].url;
+                   //      image=data.results[i][blog_image][0].url;
                             
                         }
                     else if(data.results[i][embded_video_image]!=null){
@@ -360,7 +360,11 @@ fetchDataAPI=(page_num)=>{
 
                                         <Link to={"/Blog-Single?id="+item.nid} className="blog-entry"
                                            data-animate-effect="fadeIn">
+                                                           { (item.image.length > 0)?
+
                                             <img src={item.image} alt="Image placeholder" style={{width: "100%" , height: "250px"}}/>
+:<span></span>
+}
                                                 <div className="blog-content-body">
                                                     <div className="post-meta">
                                                         <span className="category">{this.state.type[item.typenameid]}</span>
