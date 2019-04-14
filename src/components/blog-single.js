@@ -4,7 +4,7 @@ import Header from "./header.js";
 import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import {category_details} from "../config/config";
-import {category_type} from "../config/config";
+import {category_type,setting_api} from "../config/config";
 
 
 
@@ -28,30 +28,36 @@ class blogsingle extends Component {
         {
             window.location.href="/";
         }
-
+        
+          fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              
         fetch(category_details(xId))
             .then(blob => blob.json())
             .then(data => {
-                console.log(data)
                 var nameType="",image="",body="",typeId="",video="";
-            var fieldVideo=data.field_video_category;
-            if(data.field_video_category !=null)
+         var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video;
+
+            if(data[video_field] !=null)
                {
-                  typeId= data.field_video_category[0].target_id;
-                   if(data.field_rjs_video.length >0)
+                  typeId= data[video_field][0].target_id;
+                   if(data[embded_video].length >0)
                       {
-                                         video=data.field_rjs_video[0].value;
+                                         video=data[embded_video][0].value;
 
                       }
                  
-                   image=data.field_video_image[0].url;
+                   image=data[video_field][0].url;
                
                }
                else
                {
-                typeId= data.field_category[0].target_id;
-                   body=data.field_reactjs_body[0].value;
-                   image=data.field_rjs_image[0].url;
+                typeId= data[blog_body_category][0].target_id;
+                   body=data[blog_body][0].value;
+                   image=data[blog_image][0].url;
                }
             
 
@@ -87,6 +93,8 @@ class blogsingle extends Component {
 
 
             })
+          });
+
     }
 
     render() {
@@ -115,7 +123,7 @@ class blogsingle extends Component {
                                                 src={this.state.blog.video}></iframe>
                                                     :
         (this.state.blog.body.length > 0)?
-                                                    <div class="post-content-body">
+                                                    <div className="post-content-body">
               <p>
                                                         {this.state.blog.body}</p>
             

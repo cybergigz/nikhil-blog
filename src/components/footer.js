@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {all_css_posts} from './../config/config';
+import {all_css_posts,setting_api} from './../config/config';
 import { Link } from "react-router-dom";
 
 class Footer extends Component {
@@ -17,8 +17,12 @@ class Footer extends Component {
     };
 
     componentWillMount=()=> {
-
-        fetch(all_css_posts)
+         fetch(setting_api)
+            .then(blob2 => blob2.json())
+            .then(data2 => {
+            var reactjs_blog=data2.types[0].fields,reactjs_video=data2.types[1].fields;
+             
+             fetch(all_css_posts)
             .then(blob => blob.json())
             .then(data => {
           
@@ -28,14 +32,16 @@ class Footer extends Component {
                     if(i==3){
                         break;
                     }
-                    if (data.results[i].field_video_image !=null)
+                    if (data.results[i][reactjs_video.image] !=null)
                     {
+
+                                           
 
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
 
                                 title: data.results[i].title[0].value,
-                                image: data.results[i].field_video_image[0].url,
+                                image: data.results[i][reactjs_video.image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -47,7 +53,7 @@ class Footer extends Component {
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                                image: data.results[i].field_rjs_image[0].url,
+                                image: data.results[i][reactjs_blog.image][0].url,
                                 date: data.results[i].created[0].value
 
                             };
@@ -62,6 +68,10 @@ class Footer extends Component {
                 this.setState({blogs:mainmenu})
 
             })
+
+         });
+
+        
     }
     
     render() {

@@ -6,12 +6,11 @@ import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
 
 import ScrollAnimation from 'react-animate-on-scroll';
-import {all_posts,category_type} from './../config/config';
+import {all_posts,category_type,setting_api} from './../config/config';
 import OwlCarousel, { Options } from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import "animate.css/animate.min.css";
-import axios from 'axios';
 
 
 
@@ -43,18 +42,83 @@ class index extends Component {
         }],
         
         NumberOfPage:0,
-        pageSelected:0
+        pageSelected:0,
+        itemPerPage:0,
+        pager:{"count":"","pages":0,"items_per_page":0,"current_page":0}
         
     };
    
-componentDidMount=()=>
+componentWillMount=()=>
 {
-                      let mainmenu =[];
+this.pageChange({index:0});
+    
 
-        fetch(all_posts)
+      
+}
+componentDidUpdate=()=>{
+      var dotsList=document.getElementsByClassName("owl-dot");
+    for (var i=0;i<dotsList.length;i++)
+    {
+      dotsList[i].firstElementChild.style.display="none";
+    }
+    var index=this.state.pageSelected;
+      var pagerListSelected=document.getElementsByClassName("pagerclass"+(index+1));
+    if(pagerListSelected[0] !=undefined){
+           pagerListSelected[0].classList.add("active");
+
+       }
+}
+
+pageChange=(index)=>{
+    
+  this.setState({pageSelected:index.index});
+        var pagerList=document.getElementsByClassName("pagerclass");
+  for(var i=0;i<pagerList.length;i++)
+        {
+               pagerList[i].classList.remove("active");
+
+        }
+    
+   this.fetchDataAPI(index.index);
+}
+nextClick=()=>{
+     const itemPerPage=this.state.itemPerPage;
+
+            const numOfPage=this.state.pager.pages;
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected+1<numOfPage)
+       {
+
+       this.pageChange({index:pageSelected+1});
+       }
+    
+    
+}
+prevClick=()=>{
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected>0)
+       {
+
+
+       this.pageChange({index:pageSelected-1});
+       }
+}
+
+fetchDataAPI=(page_num)=>{
+         let mainmenu =[];
+        fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video;
+            
+                 fetch(all_posts(page_num))
             .then(blob => blob.json())
             .then(data => {
-             
+                     this.setState({itemPerPage:data.pager.items_per_page})
+                      this.setState({pager:data.pager})
+
             var typeId="",typename="",image="";
                 for (var i=0;i<data.results.length;i++)
                 {
@@ -94,7 +158,7 @@ componentDidMount=()=>
          
                 this.setState({blogs:mainmenu});
                      let menutype=[];
-            this.pageChange({index:0});
+           // this.pageChange({index:0});
 
     for(var c=0;c<this.state.blogs.length;c++)
         {
@@ -111,88 +175,29 @@ componentDidMount=()=>
 
 
             });
-         console.log(this.state.blogs);
 
-      
-}
-componentDidUpdate=()=>{
-      var dotsList=document.getElementsByClassName("owl-dot");
-    for (var i=0;i<dotsList.length;i++)
-    {
-      dotsList[i].firstElementChild.style.display="none";
-    }
-}
+        });
 
-pageChange=(index)=>{
-  this.setState({pageSelected:index.index});
-        var pagerList=document.getElementsByClassName("pagerclass");
-  for(var i=0;i<pagerList.length;i++)
-        {
-               pagerList[i].classList.remove("active");
-
-        }
-    
-    var pagerListSelected=document.getElementsByClassName("pagerclass"+(index.index+1));
-   pagerListSelected[0].classList.add("active");
-    let arrayOfPosts=[];
-        var item=index.index,itemCompare=0;
-        if(item!=0)
-            {
-                itemCompare=index.index+3;
-            }
-    
-    for(var i=itemCompare;i<itemCompare+4;i++)
-        {
-            console.log(this.state.blogs.length);
-                        console.log(i);
-
-            if(i==this.state.blogs.length)
-               {
-break;
-               }
-            else
-                {
-  arrayOfPosts.push(this.state.blogs[i]);
    
-                }
 
-        
-    }
-    this.setState({blogsPager:arrayOfPosts})
 }
-nextClick=()=>{
-            const numOfPage=Math.ceil(this.state.blogs.length/4);
-    var pageSelected=this.state.pageSelected;
-    if(pageSelected+1<numOfPage)
-       {
-
-       this.pageChange({index:pageSelected+1});
-       }
-    
-    
-}
-prevClick=()=>{
-    var pageSelected=this.state.pageSelected;
-    if(pageSelected>0)
-       {
-
-
-       this.pageChange({index:pageSelected-1});
-       }
-}
-
 
 
     render() {
       
- 
-       const numOfPage=Math.ceil(this.state.blogs.length/4);
-       const ArrayOfPage=[];
+ const itemPerPage=this.state.itemPerPage;
+               const ArrayOfPage=[];
+
+        if(itemPerPage>0){
+                 const numOfPage=this.state.pager.pages;
        for(var x=1;x<=numOfPage;x++)
            {
                ArrayOfPage.push(x);
                
            }
+           
+           }
+  
 
                 
         const options = {
@@ -346,7 +351,7 @@ prevClick=()=>{
                             <div className="col-md-12 col-lg-8 main-content">
                                 <div className="row">
                               
-                                                    {this.state.blogsPager.map((item,index) => (
+                                                    {this.state.blogs.map((item,index) => (
 
                                     <div key={index} className="col-md-6">
                                         <ScrollAnimation animateIn="fadeIn">
