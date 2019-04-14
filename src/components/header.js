@@ -57,6 +57,7 @@ if (mapIndex!=undefined)
    // map2[data.results[i].tid[0].value] = i; // initialize the map
 
     let item=  {
+         weight:data.results[i].weight[0].value,
         tid:data.results[i].tid[0].value,
         name:data.results[i].name[0].value,
         parentId:data.results[i].parent[0].target_id,
@@ -73,7 +74,16 @@ if (mapIndex!=undefined)
                       mainmenu=mainmenu.sort();
                     
 mainmenu=mainmenu.reverse();
-
+                     for(var i=0;i<mainmenu.length;i++){
+                         if(mainmenu[i].children !=null)
+                             {
+                                      var childArray=mainmenu[i].children;
+        mainmenu[i].children=childArray.sort(function(a, b){return a.weight - b.weight});
+                                 
+                             }
+                     
+                     }
+                   
 this.setState({menuData:mainmenu})
 
 
