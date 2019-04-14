@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {list_of_categories} from './../config/config';
+import {list_of_categories,setting_api} from './../config/config';
 import { Link } from "react-router-dom";
 
 
@@ -13,7 +13,12 @@ class Header extends Component {
       }]
     };
     componentWillMount=()=> {
-        fetch(list_of_categories)
+         fetch(setting_api)
+            .then(blob2 => blob2.json())
+            .then(data2 => {
+            var reactjs_blog_categorySetting=data2.settings.taxonomy_menu_vocabulary;
+             
+                 fetch(list_of_categories(reactjs_blog_categorySetting))
             .then(blob => blob.json())
             .then(data => {
                 var mainmenu=[],map={},map2={};
@@ -68,6 +73,8 @@ this.setState({menuData:mainmenu})
             .catch(e => {
                 return e;
             });
+         });
+    
 
 
     }
