@@ -128,7 +128,7 @@ fetchDataAPI=(page_num)=>{
                          image=data.results[i][blog_image][0].url;
                             
                         }
-                    elseif(data.results[i][embded_video_image]!=null){
+                    else if(data.results[i][embded_video_image]!=null){
                    typeId=data.results[i][video_field][0].target_id;
                         image=data.results[i][embded_video_image][0].url;
 
