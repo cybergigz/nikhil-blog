@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 class Header extends Component {
     state={
       menuData:[{
+          weight:0,
           tid:"",
           name:"",
           parentId:"",
@@ -21,7 +22,7 @@ class Header extends Component {
                  fetch(list_of_categories(reactjs_blog_categorySetting))
             .then(blob => blob.json())
             .then(data => {
-                var mainmenu=[],map={},map2={};
+                var mainmenu=[],mainmenu2=[],mainmenu2reve=[],map={},map2={};
         var x=-1;
 
 for (var i=0;i<data.results.length;i++)
@@ -29,11 +30,13 @@ for (var i=0;i<data.results.length;i++)
 
     if (data.results[i].parent[0].target_id ==null)
     {
+
         x=x+1;
         
         map[data.results[i].tid[0].value] = x; 
 
         let item=  {
+            weight:data.results[i].weight[0].value,
             tid:data.results[i].tid[0].value,
             name:data.results[i].name[0].value,
           children:[]
@@ -41,17 +44,15 @@ for (var i=0;i<data.results.length;i++)
         mainmenu.push(item);
     }
 }
-   console.log(mainmenu);                  
+                    
 for (var i=0;i<data.results.length;i++)
 {
     
 if (data.results[i].parent[0].target_id !=null)
     {
-        console.log(map);
         let mapIndex=map[data.results[i].parent[0].target_id];
 if (mapIndex!=undefined)
 {  
-          console.log(mapIndex);
 
    // map2[data.results[i].tid[0].value] = i; // initialize the map
 
@@ -64,11 +65,14 @@ if (mapIndex!=undefined)
     if(mainmenu[mapIndex] !=undefined)
     mainmenu[mapIndex].children.push(item);
 }
+        
 
 
     }
 }
-
+                      mainmenu=mainmenu.sort();
+                    
+mainmenu=mainmenu.reverse();
 
 this.setState({menuData:mainmenu})
 
