@@ -36,9 +36,10 @@ for (var i=0;i<data.results.length;i++)
     {
         let mapIndex=map[data.results[i].parent[0].target_id];
 
-
         if (mapIndex!=undefined)
-{        map2[data.results[i].tid[0].value] = i; // initialize the map
+{  
+  
+    map2[data.results[i].tid[0].value] = i; // initialize the map
 
 
     let item=  {
@@ -47,7 +48,11 @@ for (var i=0;i<data.results.length;i++)
         parentId:data.results[i].parent[0].target_id,
         children:[]
     };
-    mainmenu[mapIndex].children.push(item);
+    if(mainmenu[mapIndex] !=undefined)
+       {
+           mainmenu[mapIndex].children.push(item);
+
+       }
 
 }
 
@@ -61,7 +66,6 @@ this.setState({menuData:mainmenu})
 
             })
             .catch(e => {
-                console.log(e);
                 return e;
             });
 
@@ -122,10 +126,10 @@ this.setState({menuData:mainmenu})
                                             </li>
 
                                             :
-                                             <li key={item.tid} className="nav-item dropdown"   >
-                                                 <a className="nav-link dropdown-toggle" onMouseEnter={this.OnmenuHover}  href={'/category?id='+item.tid+'&name='+item.name} id="dropdown04"
+                                             <li key={item.tid} className=" nav-item dropdown"   >
+                                                 <a className=" nav-link dropdown-toggle"  onMouseEnter={this.OnmenuHover}  href={'/category?id='+item.tid+'&name='+item.name} id="dropdown04"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{item.name}</a>
-                                                 <div className="dropdown-menu" aria-labelledby="dropdown04" onMouseLeave={this.OnmenuLeave}>
+                                                 <div className="dropdown-menu navhover2" onMouseLeave={this.OnmenuLeave} aria-labelledby="dropdown04" >
                                                      {item.children.map(itemChild => (
                                                          <a className="dropdown-item" key={itemChild.tid} href={'/category?id='+itemChild.tid+'&name='+itemChild.name}>{itemChild.name}</a>
 
@@ -153,13 +157,24 @@ this.setState({menuData:mainmenu})
         );
     }
     OnmenuHover=(e)=>{
-        e.target.parentElement.classList.add("show")
-e.target.nextElementSibling.classList.add("show")
+        
+         
+      
+        
+          var dotsList=document.getElementsByClassName("navhover2");
+    for (var i=0;i<dotsList.length;i++)
+    {
+      dotsList[i].classList.remove("show")
+    }
+          e.target.parentElement.classList.add("show");
+e.target.nextElementSibling.classList.add("show");
+        
     }
 
     OnmenuLeave=(e)=>{
+       
         e.target.parentElement.classList.remove("show")
-        e.target.classList.remove("show")
+e.target.classList.remove("show")
 
 
     }

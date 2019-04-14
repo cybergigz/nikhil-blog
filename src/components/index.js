@@ -1,27 +1,205 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
+import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
+import { Link } from "react-router-dom";
+
+import ScrollAnimation from 'react-animate-on-scroll';
+import {all_posts,category_type,setting_api} from './../config/config';
 import OwlCarousel, { Options } from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import "animate.css/animate.min.css";
-import ScrollAnimation from 'react-animate-on-scroll';
+
+
 
 
 
 
 class index extends Component {
-componentDidMount=()=>{
-    var dotsList=document.getElementsByClassName("owl-dot");
+    state={
+        type:[],
+        blogs:[{
+            nid:0,
+            typenameid:0,
+            typeId:"",
+            title:"",
+            image:"",
+            date:"",
+            type:""
+
+        }],
+          blogsPager:[{
+            nid:0,
+            typenameid:0,
+            typeId:"",
+            title:"",
+            image:"",
+            date:"",
+            type:""
+
+        }],
+        
+        NumberOfPage:0,
+        pageSelected:0,
+        itemPerPage:0,
+        pager:{"count":"","pages":0,"items_per_page":0,"current_page":0}
+        
+    };
+   
+componentWillMount=()=>
+{
+this.pageChange({index:0});
+    
+
+      
+}
+componentDidUpdate=()=>{
+      var dotsList=document.getElementsByClassName("owl-dot");
     for (var i=0;i<dotsList.length;i++)
     {
-      dotsList[i].innerHTML="";
+      dotsList[i].firstElementChild.style.display="none";
     }
+    var index=this.state.pageSelected;
+      var pagerListSelected=document.getElementsByClassName("pagerclass"+(index+1));
+    if(pagerListSelected[0] !=undefined){
+           pagerListSelected[0].classList.add("active");
+
+       }
+}
+
+pageChange=(index)=>{
+    
+  this.setState({pageSelected:index.index});
+        var pagerList=document.getElementsByClassName("pagerclass");
+  for(var i=0;i<pagerList.length;i++)
+        {
+               pagerList[i].classList.remove("active");
+
+        }
+    
+   this.fetchDataAPI(index.index);
+}
+nextClick=()=>{
+     const itemPerPage=this.state.itemPerPage;
+
+            const numOfPage=this.state.pager.pages;
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected+1<numOfPage)
+       {
+
+       this.pageChange({index:pageSelected+1});
+       }
+    
+    
+}
+prevClick=()=>{
+    var pageSelected=this.state.pageSelected;
+    if(pageSelected>0)
+       {
+
+
+       this.pageChange({index:pageSelected-1});
+       }
+}
+
+fetchDataAPI=(page_num)=>{
+         let mainmenu =[];
+        fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video;
+            
+                 fetch(all_posts(page_num))
+            .then(blob => blob.json())
+            .then(data => {
+                     this.setState({itemPerPage:data.pager.items_per_page})
+                      this.setState({pager:data.pager})
+
+            var typeId="",typename="",image="";
+                for (var i=0;i<data.results.length;i++)
+                {
+                    if(data.results[i].field_category!=null)
+                        {
+                            typeId=data.results[i].field_category[0].target_id;
+                         image=data.results[i].field_rjs_image[0].url;
+                            
+                        }
+                    else{
+                   typeId=data.results[i].field_video_category[0].target_id;
+                        image=data.results[i].field_video_image[0].url;
+
+                        
+                    }
+
+                
+                    
+                    
+                      let blogs = {
+                                nid: data.results[i].nid[0].value,
+                          typenameid:i,
+                                typeId:typeId,
+                                title: data.results[i].title[0].value,
+                                image: image,
+                                date:data.results[i].created[0].value, 
+                                type:""
+
+                            };
+                         mainmenu.push(blogs);
+                   
+
+          
+                }
+           
+
+         
+                this.setState({blogs:mainmenu});
+                     let menutype=[];
+           // this.pageChange({index:0});
+
+    for(var c=0;c<this.state.blogs.length;c++)
+        {
+             fetch(category_type(this.state.blogs[c].typeId))
+            .then(blob => blob.json())
+            .then(data => {
+                 menutype.push(data.name[0].value);
+                 this.setState({type:menutype})
+                 
+
+             })
+        
+    }
+
+
+            });
+
+        });
+
+   
+
 }
 
 
     render() {
+      
+ const itemPerPage=this.state.itemPerPage;
+               const ArrayOfPage=[];
+
+        if(itemPerPage>0){
+                 const numOfPage=this.state.pager.pages;
+       for(var x=1;x<=numOfPage;x++)
+           {
+               ArrayOfPage.push(x);
+               
+           }
+           
+           }
+  
+
+                
         const options = {
             loop:true,
             autoplay: true,
@@ -51,8 +229,7 @@ componentDidMount=()=>{
         return (
             <div>
                 <Header/>
-
-                <section className="site-section pt-5">
+   <section className="site-section pt-5">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12">
@@ -113,59 +290,7 @@ componentDidMount=()=>{
                                         </a>
                                     </div>
                                 </OwlCarousel>
-                                <div className="owl-carousel owl-theme home-slider">
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_1.jpg)'}}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_2.jpg)' }}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_3.jpg)' }}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+                              
 
                             </div>
                         </div>
@@ -214,7 +339,7 @@ componentDidMount=()=>{
 
 
                 </section>
-
+               
                 <section className="site-section py-sm">
                     <div className="container">
                         <div className="row">
@@ -225,158 +350,46 @@ componentDidMount=()=>{
                         <div className="row blog-entries">
                             <div className="col-md-12 col-lg-8 main-content">
                                 <div className="row">
-                                    <div className="col-md-6">
+                              
+                                                    {this.state.blogs.map((item,index) => (
+
+                                    <div key={index} className="col-md-6">
                                         <ScrollAnimation animateIn="fadeIn">
 
-                                        <a href="blog-single.html" className="blog-entry"
-                                           >
-                                            <img src="./images/img_5.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Food</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry"
+                                        <Link to={"/Blog-Single?id="+item.nid} className="blog-entry"
                                            data-animate-effect="fadeIn">
-                                            <img src="./images/img_6.jpg" alt="Image placeholder"/>
+                                            <img src={item.image} alt="Image placeholder" style={{width: "100%" , height: "250px"}}/>
                                                 <div className="blog-content-body">
                                                     <div className="post-meta">
-                                                        <span className="category">Travel</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
+                                                        <span className="category">{this.state.type[item.typenameid]}</span>
+                                                        <span className="mr-2">{item.date} </span> 
                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
                                                     </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
+                                                    <h2>{item.title}</h2>
                                                 </div>
-                                        </a>
+                                        </Link>
                                         </ScrollAnimation>
                                     </div>
+            ))}
 
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry"
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_7.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Travel, Asia</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry"
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_8.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Travel</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry"
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_9.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Travel</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry"
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_10.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Lifestyle</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry "
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_11.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Lifestyle</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <ScrollAnimation animateIn="fadeIn">
-
-                                        <a href="blog-single.html" className="blog-entry "
-                                           data-animate-effect="fadeIn">
-                                            <img src="./images/img_12.jpg" alt="Image placeholder"/>
-                                                <div className="blog-content-body">
-                                                    <div className="post-meta">
-                                                        <span className="category">Food</span>
-                                                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                        <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                                    </div>
-                                                    <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                                                </div>
-                                        </a>
-                                        </ScrollAnimation>
-                                    </div>
-                                </div>
+                               
+                                
+                            </div>
 
                                 <div className="row">
                                     <div className="col-md-12 text-center">
                                         <nav aria-label="Page navigation" className="text-center">
                                             <ul className="pagination">
-                                                <li className="page-item  active"><a className="page-link"
-                                                                                     href="#">Prev</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                                <li className="page-item"><a className="page-link" href="#">Next</a>
+                                               
+                                                <li className="page-item "><a className="page-link" onClick={()=>this.prevClick()}>Prev</a></li>
+                {ArrayOfPage.map((item, index) => (
+                 <li key={index} className={"page-item pagerclass pagerclass"+item}><a className="page-link" onClick={()=>this.pageChange({index})}>{item}</a></li>
+                                     
+
+))}
+
+                                               
+                                                <li className="page-item"><a className="page-link" onClick={()=>this.nextClick()}>Next</a>
                                                 </li>
                                             </ul>
                                         </nav>
@@ -384,191 +397,11 @@ componentDidMount=()=>{
                                 </div>
 
 
-                                <div className="row mb-5 mt-5">
-
-                                    <div className="col-md-12">
-                                        <h2 className="mb-4">More Blog Posts</h2>
-                                    </div>
-
-                                    <div className="col-md-12">
-
-                                        <div className="post-entry-horzontal">
-                                            <ScrollAnimation animateIn="fadeIn">
-
-                                            <a href="blog-single.html">
-
-                                                <div className="image"
-                                                     style={{backgroundImage: 'url(./images/img_10.jpg)'}}></div>
-                                                <span className="text">
-                      <div className="post-meta">
-                        <span className="category">Travel</span>
-                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                          <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                      </div>
-                      <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                    </span>
-                                            </a>
-                                            </ScrollAnimation>
-                                        </div>
-
-                                        <div className="post-entry-horzontal">
-                                            <ScrollAnimation animateIn="fadeIn">
-
-                                            <a href="blog-single.html">
-                                                <div className="image" data-animate-effect="fadeIn"
-                                                     style={{backgroundImage: 'url(./images/img_11.jpg)'}}></div>
-                                                <span className="text">
-                      <div className="post-meta">
-                        <span className="category">Lifestyle</span>
-                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                          <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                      </div>
-                      <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                    </span>
-                                            </a>
-                                            </ScrollAnimation>
-
-                                        </div>
-
-                                        <div className="post-entry-horzontal">
-                                            <ScrollAnimation animateIn="fadeIn">
-
-                                            <a href="blog-single.html">
-                                                <div className="image " data-animate-effect="fadeIn"
-                                                     style={{backgroundImage: 'url(./images/img_12.jpg)'}}></div>
-                                                <span className="text">
-                      <div className="post-meta">
-                        <span className="category">Food</span>
-                        <span className="mr-2">March 15, 2018 </span> &bullet;
-                          <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                      </div>
-                      <h2>There’s a Cool New Way for Men to Wear Socks and Sandals</h2>
-                    </span>
-                                            </a>
-                                            </ScrollAnimation>
-
-                                        </div>
-
-                                    </div>
-                                </div>
 
 
                             </div>
 
-
-                            <div className="col-md-12 col-lg-4 sidebar">
-                                <div className="sidebar-box search-form-wrap">
-                                    <form action="#" className="search-form">
-                                        <div className="form-group">
-                                            <span className="icon fa fa-search"></span>
-                                            <input type="text" className="form-control" id="s"
-                                                   placeholder="Type a keyword and hit enter"/>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div className="sidebar-box">
-                                    <div className="bio text-center">
-                                        <img src="./images/person_1.jpg" alt="Image Placeholder" className="img-fluid"/>
-                                            <div className="bio-body">
-                                                <h2>Meagan Smith</h2>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                    Exercitationem facilis sunt repellendus excepturi beatae porro
-                                                    debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
-                                                <p><a href="#" className="btn btn-primary btn-sm">Read my bio</a></p>
-                                                <p className="social">
-                                                    <a href="#" className="p-2"><span className="fa fa-facebook"></span></a>
-                                                    <a href="#" className="p-2"><span className="fa fa-twitter"></span></a>
-                                                    <a href="#" className="p-2"><span
-                                                        className="fa fa-instagram"></span></a>
-                                                    <a href="#" className="p-2"><span
-                                                        className="fa fa-youtube-play"></span></a>
-                                                </p>
-                                            </div>
-                                    </div>
-                                </div>
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Popular Posts</h3>
-                                    <div className="post-entry-sidebar">
-                                        <ul>
-                                            <li>
-                                                <a href="">
-                                                    <img src="./images/img_2.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="./images/img_4.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="./images/img_12.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Categories</h3>
-                                    <ul className="categories">
-                                        <li><a href="#">Courses <span>(12)</span></a></li>
-                                        <li><a href="#">News <span>(22)</span></a></li>
-                                        <li><a href="#">Design <span>(37)</span></a></li>
-                                        <li><a href="#">HTML <span>(42)</span></a></li>
-                                        <li><a href="#">Web Development <span>(14)</span></a></li>
-                                    </ul>
-                                </div>
-
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Tags</h3>
-                                    <ul className="tags">
-                                        <li><a href="#">Travel</a></li>
-                                        <li><a href="#">Adventure</a></li>
-                                        <li><a href="#">Food</a></li>
-                                        <li><a href="#">Lifestyle</a></li>
-                                        <li><a href="#">Business</a></li>
-                                        <li><a href="#">Freelancing</a></li>
-                                        <li><a href="#">Travel</a></li>
-                                        <li><a href="#">Adventure</a></li>
-                                        <li><a href="#">Food</a></li>
-                                        <li><a href="#">Lifestyle</a></li>
-                                        <li><a href="#">Business</a></li>
-                                        <li><a href="#">Freelancing</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
+<Sidebar/>
                         </div>
                     </div>
                 </section>
@@ -586,6 +419,8 @@ componentDidMount=()=>{
             </div>
         );
     }
+   
 }
+
 
 export default index;

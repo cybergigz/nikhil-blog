@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
+import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import {category_details} from "../config/config";
-import {category_type} from "../config/config";
+import {category_type,setting_api} from "../config/config";
+var getYouTubeID = require('get-youtube-id');
+
 
 
 
@@ -16,6 +19,7 @@ class blogsingle extends Component {
             image:"",
             date:"",
             video:"",
+            body:"",
             type:""
 
         }
@@ -26,83 +30,66 @@ class blogsingle extends Component {
         {
             window.location.href="/";
         }
-
+        
+          fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+              
         fetch(category_details(xId))
             .then(blob => blob.json())
             .then(data => {
-                console.log(data)
-                var nameType="";
+                var nameType="",image="",body="",typeId="",video="";
+         var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+                     var embded_video=reactjs_video.embedded_video;
+
+            if(data[video_field] !=null)
+               {
+                  typeId= data[video_field][0].target_id;
+                   if(data[embded_video].length >0)
+                      {
+                          var id = getYouTubeID(data[embded_video][0].value);
+
+                                         video="https://www.youtube.com/embed/"+id+"";
+
+                      }
+                 
+                   image=data[video_field][0].url;
+               
+               }
+               else
+               {
+                typeId= data[blog_body_category][0].target_id;
+                   body=data[blog_body][0].value;
+                   image=data[blog_image][0].url;
+               }
+            
 
 
-                fetch(category_type(data.field_video_category[0].target_id))
+                fetch(category_type(typeId))
                     .then(blob2 => blob2.json())
                     .then(data2 => {
 
                         nameType=data2.name[0].value;
-                        if (data.field_video_image !=null)
-                        {
-
-                            if (data.field_rjs_video[0] !=null) {
+                       
                                 let blog={
                                     nid:data.nid[0].value,
-
                                     title:data.title[0].value,
-                                    image:data.field_video_image[0].url,
+                                    image:image,
                                     date:data.created[0].value,
-                                    video:data.field_rjs_video[0].value,
+                                    video:video,
+                                    body:body,
                                     type:nameType
 
 
                                 };
                                 this.setState({blog:blog})
-                            }
-                            else {
-                                    let blog = {
-                                        nid: data.nid[0].value,
-
-                                        title: data.title[0].value,
-                                        image: data.field_video_image[0].url,
-                                        date: data.created[0].value,
-                                        video: "",
-                                        type: nameType
+                            
+                     
 
 
-                                    };
-
-                                this.setState({blog:blog})
-                            }
-
-
-                        }
-                        else {
-                            if (data.field_rjs_video[0] != null) {
-                                let blog = {
-                                    nid: data.nid[0].value,
-                                    title: data.title[0].value,
-                                    image: data.field_rjs_image[0].url,
-                                    date: data.created[0].value,
-                                    video: data.field_rjs_video[0].value,
-                                    type: nameType
-
-
-                                };
-                                this.setState({blog: blog})
-                            }
-                            else
-                            {
-                                let blog = {
-                                    nid: data.nid[0].value,
-                                    title: data.title[0].value,
-                                    image: data.field_rjs_image[0].url,
-                                    date: data.created[0].value,
-                                    video: "",
-                                    type: nameType
-
-
-                                };
-                                this.setState({blog: blog})
-                            }
-                        }
+                        
+                   
 
                     })
 
@@ -110,6 +97,8 @@ class blogsingle extends Component {
 
 
             })
+          });
+
     }
 
     render() {
@@ -137,8 +126,15 @@ class blogsingle extends Component {
                                                 allowFullScreen="allowfullscreen"
                                                 src={this.state.blog.video}></iframe>
                                                     :
-                                                    <p></p>
-
+        (this.state.blog.body.length > 0)?
+                                                    <div className="post-content-body">
+              <p>
+                                                        {this.state.blog.body}</p>
+            
+    
+            </div>
+        :
+        <p></p>
                                             }
 
                                             <img src={this.state.blog.image} alt="Image placeholder"  className="img-fluid"/>
@@ -292,120 +288,8 @@ class blogsingle extends Component {
 
                             </div>
 
-
-                            <div className="col-md-12 col-lg-4 sidebar">
-                                <div className="sidebar-box search-form-wrap">
-                                    <form action="#" className="search-form">
-                                        <div className="form-group">
-                                            <span className="icon fa fa-search"></span>
-                                            <input type="text" className="form-control" id="s"
-                                                   placeholder="Type a keyword and hit enter"/>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div className="sidebar-box">
-                                    <div className="bio text-center">
-                                        <img src="images/person_1.jpg" alt="Image Placeholder" className="img-fluid"/>
-                                            <div className="bio-body">
-                                                <h2>Meagan Smith</h2>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                    Exercitationem facilis sunt repellendus excepturi beatae porro
-                                                    debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
-                                                <p><a href="#" className="btn btn-primary btn-sm">Read my bio</a></p>
-                                                <p className="social">
-                                                    <a href="#" className="p-2"><span className="fa fa-facebook"></span></a>
-                                                    <a href="#" className="p-2"><span className="fa fa-twitter"></span></a>
-                                                    <a href="#" className="p-2"><span
-                                                        className="fa fa-instagram"></span></a>
-                                                    <a href="#" className="p-2"><span
-                                                        className="fa fa-youtube-play"></span></a>
-                                                </p>
-                                            </div>
-                                    </div>
-                                </div>
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Popular Posts</h3>
-                                    <div className="post-entry-sidebar">
-                                        <ul>
-                                            <li>
-                                                <a href="">
-                                                    <img src="images/img_1.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="images/img_1.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="images/img_1.jpg" alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                        <div className="text">
-                                                            <h4>There’s a Cool New Way for Men to Wear Socks and
-                                                                Sandals</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Categories</h3>
-                                    <ul className="categories">
-                                        <li><a href="#">Courses <span>(12)</span></a></li>
-                                        <li><a href="#">News <span>(22)</span></a></li>
-                                        <li><a href="#">Design <span>(37)</span></a></li>
-                                        <li><a href="#">HTML <span>(42)</span></a></li>
-                                        <li><a href="#">Web Development <span>(14)</span></a></li>
-                                    </ul>
-                                </div>
-
-                                <div className="sidebar-box">
-                                    <h3 className="heading">Tags</h3>
-                                    <ul className="tags">
-                                        <li><a href="#">Travel</a></li>
-                                        <li><a href="#">Adventure</a></li>
-                                        <li><a href="#">Food</a></li>
-                                        <li><a href="#">Lifestyle</a></li>
-                                        <li><a href="#">Business</a></li>
-                                        <li><a href="#">Freelancing</a></li>
-                                        <li><a href="#">Travel</a></li>
-                                        <li><a href="#">Adventure</a></li>
-                                        <li><a href="#">Food</a></li>
-                                        <li><a href="#">Lifestyle</a></li>
-                                        <li><a href="#">Business</a></li>
-                                        <li><a href="#">Freelancing</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
+<Sidebar/>
+                           
                         </div>
                     </div>
                 </section>
