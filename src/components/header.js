@@ -22,13 +22,16 @@ class Header extends Component {
             .then(blob => blob.json())
             .then(data => {
                 var mainmenu=[],map={},map2={};
+        var x=-1;
 
 for (var i=0;i<data.results.length;i++)
 {
 
     if (data.results[i].parent[0].target_id ==null)
     {
-        map[data.results[i].tid[0].value] = i; // initialize the map
+        x=x+1;
+        
+        map[data.results[i].tid[0].value] = x; 
 
         let item=  {
             tid:data.results[i].tid[0].value,
@@ -37,15 +40,20 @@ for (var i=0;i<data.results.length;i++)
         };
         mainmenu.push(item);
     }
-    else
+}
+   console.log(mainmenu);                  
+for (var i=0;i<data.results.length;i++)
+{
+    
+if (data.results[i].parent[0].target_id !=null)
     {
+        console.log(map);
         let mapIndex=map[data.results[i].parent[0].target_id];
-
-        if (mapIndex!=undefined)
+if (mapIndex!=undefined)
 {  
-  
-    map2[data.results[i].tid[0].value] = i; // initialize the map
+          console.log(mapIndex);
 
+   // map2[data.results[i].tid[0].value] = i; // initialize the map
 
     let item=  {
         tid:data.results[i].tid[0].value,
@@ -54,23 +62,21 @@ for (var i=0;i<data.results.length;i++)
         children:[]
     };
     if(mainmenu[mapIndex] !=undefined)
-       {
-           mainmenu[mapIndex].children.push(item);
-
-       }
-
+    mainmenu[mapIndex].children.push(item);
 }
 
 
     }
-
 }
+
+
 this.setState({menuData:mainmenu})
 
 
 
             })
             .catch(e => {
+                     console.log(e);
                 return e;
             });
          });

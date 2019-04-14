@@ -111,7 +111,7 @@ fetchDataAPI=(page_num)=>{
             .then(data3 => {
             var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
               var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
-                     var embded_video=reactjs_video.embedded_video;
+                     var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
             
                  fetch(all_posts(page_num))
             .then(blob => blob.json())
@@ -122,15 +122,15 @@ fetchDataAPI=(page_num)=>{
             var typeId="",typename="",image="";
                 for (var i=0;i<data.results.length;i++)
                 {
-                    if(data.results[i].field_category!=null)
+                    if(data.results[i][blog_body_category]!=null)
                         {
-                            typeId=data.results[i].field_category[0].target_id;
-                         image=data.results[i].field_rjs_image[0].url;
+                            typeId=data.results[i][blog_body_category][0].target_id;
+                         image=data.results[i][blog_image][0].url;
                             
                         }
                     else{
-                   typeId=data.results[i].field_video_category[0].target_id;
-                        image=data.results[i].field_video_image[0].url;
+                   typeId=data.results[i][video_field][0].target_id;
+                        image=data.results[i][embded_video_image][0].url;
 
                         
                     }
