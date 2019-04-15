@@ -101,7 +101,7 @@ prevClick=()=>{
 }
 fetchDataAPI=(page_num)=>{
      var xId = GetParameterValues('id');
-        var xname = GetParameterValues('name');
+        var xname =replce_name(GetParameterValues('name'));
 this.xxname=xname;
         if (xId==null)
         {
@@ -111,8 +111,22 @@ this.xxname=xname;
  fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
-              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+               var reactjs_blog=[],reactjs_video=[];
+              for(var i=0;i<data3.types.length;i++)
+                  {
+                      if(data3.types[i].node_type=="reactjs_blog")
+                          {
+                             reactjs_blog= data3.types[i].fields;
+                          }
+                      else if(data3.types[i].node_type=="reactjs_videos")
+                              {
+                                                           reactjs_video= data3.types[i].fields;
+
+                              }
+                      
+                  }
+     
+     var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
                      var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
      
      fetch(list_of_category_type(xId,page_num))
@@ -129,6 +143,13 @@ this.xxname=xname;
 
                 for (var i=0;i<data.results.length;i++)
                 {
+                    var day="",month="",year="",fulldate="";
+            var datefull = new Date(data.results[i].created[0].value.toString());
+           day = datefull.getDate();
+            month = datefull.getMonth();
+             year = datefull.getFullYear();
+            fulldate=day+"/"+month+"/"+year
+            
                     if (data.results[i][embded_video_image] !=null)
                     {
 
@@ -137,7 +158,7 @@ this.xxname=xname;
 
                                 title: data.results[i].title[0].value,
                                 image: data.results[i][embded_video_image][0].url,
-                                date: data.results[i].created[0].value
+                                date: fulldate
 
                             };
                             mainmenu.push(blogs);
@@ -145,11 +166,16 @@ this.xxname=xname;
                     }
                     else
                     {
+                         var bodeImage="";          
+                        if(reactjs_blog.image.length>0){
+                            bodeImage=data.results[i][reactjs_blog.image][0].url
+                            
+                        }
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                              //  image: data.results[i][blog_image][0].url,
-                                date: data.results[i].created[0].value
+                               image: bodeImage,
+                                date: fulldate
 
                             };
                             mainmenu.push(blogs);
@@ -265,5 +291,8 @@ function GetParameterValues(param) {
             return urlparam[1];
         }
     }
+}
+function replce_name(str){
+    return  str.replace(/%20/g, " ");
 }
 export default category;
