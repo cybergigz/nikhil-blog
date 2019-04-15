@@ -111,8 +111,21 @@ fetchDataAPI=(page_num)=>{
         fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
-              var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
+              var reactjs_blog=[],reactjs_video=[];
+              for(var i=0;i<data3.types.length;i++)
+                  {
+                      if(data3.types[i].node_type=="reactjs_blog")
+                          {
+                             reactjs_blog= data3.types[i].fields;
+                          }
+                      else if(data3.types[i].node_type=="reactjs_videos")
+                              {
+                                                           reactjs_video= data3.types[i].fields;
+
+                              }
+                      
+                  }
+            var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
                      var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
             
                  fetch(all_posts(page_num))
@@ -124,34 +137,135 @@ fetchDataAPI=(page_num)=>{
             var typeId="",typename="",image="";
                 for (var i=0;i<data.results.length;i++)
                 {
-                    if(data.results[i][blog_body_category]!=null)
+                      var day="",month="",year="",fulldate="";
+            var datefull = new Date(data.results[i].created[0].value.toString());
+           day = datefull.getDate();
+            month = datefull.getMonth();
+             year = datefull.getFullYear();
+            fulldate=day+"/"+month+"/"+year
+                    if(data.results[i][blog_body]!=undefined)
                         {
-                            typeId=data.results[i][blog_body_category][0].target_id;
-                   //      image=data.results[i][blog_image][0].url;
+                             var bodeImage="";          
+                        if(reactjs_blog.image.length>0){
+                            if(data.results[i][reactjs_blog.image] !=undefined){
+                                                           bodeImage=data.results[i][reactjs_blog.image][0].url
+
+                               }
+                            
+                              else{
+                                 bodeImage=data.results[i].field_image[0].url
+                                
+                            }
+                            
+                              
                             
                         }
-                    else{
-                   typeId=data.results[i][video_field][0].target_id;
-                        image=data.results[i][embded_video_image][0].url;
-
+                            
+                            typeId=data.results[i][blog_body_category][0].target_id;
+                        image=bodeImage;
+                            
                         
-                    }
-
-                
-                    
-                    
-                      let blogs = {
+                            
+                                  let blogs = {
                                 nid: data.results[i].nid[0].value,
                           typenameid:i,
                                 typeId:typeId,
                                 title: data.results[i].title[0].value,
                                 image: image,
-                                date:data.results[i].created[0].value, 
+                                date:fulldate, 
                                 type:""
 
                             };
                          mainmenu.push(blogs);
                    
+                        }
+                    
+                    else if(data.results[i].body !=undefined)
+                        {
+                             var bodeImage="";          
+                        if(reactjs_blog.image.length>0){
+                            if(data.results[i][reactjs_blog.image] !=undefined){
+                            bodeImage=data.results[i][reactjs_blog.image][0].url
+
+                               }
+                            
+                              else if(data.results[i].field_image !=undefined){
+                                  
+                                 bodeImage=data.results[i].field_image[0].url
+                                
+                            }
+                            
+                              
+                            
+                        }
+                            if(data.results[i][blog_body_category] !=undefined){
+                                                           typeId=data.results[i][blog_body_category][0].target_id;
+
+                               }
+                        image=bodeImage;
+                            
+                        
+                            
+                                  let blogs = {
+                                nid: data.results[i].nid[0].value,
+                          typenameid:i,
+                                typeId:typeId,
+                                title: data.results[i].title[0].value,
+                                image: image,
+                                date:fulldate, 
+                                type:""
+
+                            };
+                         mainmenu.push(blogs);
+                            
+                            
+                        }
+                    
+                    else if(data.results[i][embded_video]!=undefined)
+                        {
+                                  var bodeImage="";          
+                        if(embded_video_image.length>0){
+                            if(data.results[i][embded_video_image] !=undefined){
+                            bodeImage=data.results[i][embded_video_image][0].url
+
+                               }
+                            
+                              else if(data.results[i].field_image !=undefined){
+                                  
+                                 bodeImage=data.results[i].field_image[0].url
+                                
+                            }
+                            
+                              
+                            
+                        }
+                            if(data.results[i][video_field] !=undefined){
+                                                           typeId=data.results[i][video_field][0].target_id;
+
+                               }
+                        image=bodeImage;
+                            
+                        
+                            
+                                  let blogs = {
+                                nid: data.results[i].nid[0].value,
+                          typenameid:i,
+                                typeId:typeId,
+                                title: data.results[i].title[0].value,
+                                image: image,
+                                date:fulldate, 
+                                type:""
+
+                            };
+                         mainmenu.push(blogs);
+                            
+                            
+                        }
+                  
+                
+                    
+                    
+               
 
           
                 }
@@ -164,14 +278,23 @@ fetchDataAPI=(page_num)=>{
 
     for(var c=0;c<this.state.blogs.length;c++)
         {
-             fetch(category_type(this.state.blogs[c].typeId))
+            if(this.state.blogs[c].typeId.length >0){
+                fetch(category_type(this.state.blogs[c].typeId))
             .then(blob => blob.json())
             .then(data => {
-                 menutype.push(data.name[0].value);
+                    console.log(data.name[0].value);
+                menutype.push(data.name[0].value);
                  this.setState({type:menutype})
                  
 
              })
+               }
+            else
+                {
+                     menutype.push("");
+                 this.setState({type:menutype})
+                }
+            
         
     }
 

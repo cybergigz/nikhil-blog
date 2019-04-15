@@ -34,17 +34,36 @@ class blogsingle extends Component {
           fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-              console.log(data3.types[1].fields);
-            var reactjs_blog=data3.types[0].fields,reactjs_video=data3.types[1].fields;
+            var reactjs_blog=[],reactjs_video=[];
+              for(var i=0;i<data3.types.length;i++)
+                  {
+                      if(data3.types[i].node_type=="reactjs_blog")
+                          {
+                             reactjs_blog= data3.types[i].fields;
+                          }
+                      else if(data3.types[i].node_type=="reactjs_videos")
+                              {
+                                                           reactjs_video= data3.types[i].fields;
+
+                              }
+                      
+                  }
               
         fetch(category_details(xId))
             .then(blob => blob.json())
             .then(data => {
                 var nameType="",image="",body="",typeId="",video="";
+            
          var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
                      var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
-                   console.log(video_field);
-
+var day="",month="",year="",fulldate="";
+            var datefull = new Date(data.created[0].value.toString());
+           day = datefull.getDate();
+            month = datefull.getMonth();
+             year = datefull.getFullYear();
+            fulldate=day+"/"+month+"/"+year
+            
+           
             if(data[video_field] !=null)
                {
                   typeId= data[video_field][0].target_id;
@@ -55,21 +74,90 @@ class blogsingle extends Component {
                                          video="https://www.youtube.com/embed/"+id+"";
 
                       }
-                   body=data[blog_body][0].value;
+                    var bodyblog="";          
+                        if(blog_body !=null){
+                            if(data[blog_body]!=undefined){
+                               bodyblog=data[blog_body][0].value;
+                               }
+                            
+                            
+                        }
+                   
+                   body=bodyblog;
+                    var bodeImage="";          
+                        if(embded_video_image !=null){
+                            if(data[embded_video_image] !=undefined){
+                                                           bodeImage=data[embded_video_image][0].url;
+
+                               }
+                            else if(data[blog_image] !=undefined){
+                                 bodeImage=data[blog_image][0].url;
+                                
+                            }
+                            else
+                                {
+                                        if(data.field_image !=undefined)
+                                       {
+                                 bodeImage=data.field_image[0].url;
+                                
+                            }
+                                }
+                            
+                        }
                  
-                  // image=data[embded_video_image][0].url;
+                  image=bodeImage;
                
                }
                else
                {
-                typeId= data[blog_body_category][0].target_id;
-                   body=data[blog_body][0].value;
-                 //  image=data[blog_image][0].url;
+                   
+                         var bodeImage="";    
+                        if(reactjs_blog.image.length>0){
+                            if(data[reactjs_blog.image] !=undefined){
+                                                           bodeImage=data[reactjs_blog.image][0].url
+
+                               }
+                            else{
+                                if(data.field_image !=undefined){
+                                                                    bodeImage=data.field_image[0].url
+
+                                   }
+                                
+                            }
+                            
+                        }
+                   if(data[blog_body_category] !=undefined){
+                                       typeId= data[blog_body_category][0].target_id;
+
+                   }
+if(data[blog_body_category] !=undefined)
+{
+                                         body=data[blog_body][0].value;
+}
+else {
+body=data.body[0].value;
+
+}
+                      
+                   image=bodeImage;
                }
             
+            
+     let blog={
+                                    nid:data.nid[0].value,
+                                    title:data.title[0].value,
+                                    image:image,
+                                    date:fulldate,
+                                    video:video,
+                                    body:body,
+                                    type:nameType
 
 
-                fetch(category_type(typeId))
+                                };
+                                this.setState({blog:blog})
+if(typeId.length>0)
+    {
+         fetch(category_type(typeId))
                     .then(blob2 => blob2.json())
                     .then(data2 => {
 
@@ -79,7 +167,7 @@ class blogsingle extends Component {
                                     nid:data.nid[0].value,
                                     title:data.title[0].value,
                                     image:image,
-                                    date:data.created[0].value,
+                                    date:fulldate,
                                     video:video,
                                     body:body,
                                     type:nameType
@@ -96,6 +184,8 @@ class blogsingle extends Component {
 
                     })
 
+    }
+               
 
 
 
