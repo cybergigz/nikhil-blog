@@ -28,8 +28,20 @@ class Sidebar extends Component {
          fetch(setting_api)
             .then(blob2 => blob2.json())
             .then(data2 => {
-            var reactjs_blog=data2.types[0].fields,reactjs_video=data2.types[1].fields;
-             
+          var reactjs_blog=[],reactjs_video=[];
+              for(var i=0;i<data2.types.length;i++)
+                  {
+                      if(data2.types[i].node_type=="reactjs_blog")
+                          {
+                             reactjs_blog= data2.types[i].fields;
+                          }
+                      else if(data2.types[i].node_type=="reactjs_videos")
+                              {
+                                                           reactjs_video= data2.types[i].fields;
+
+                              }
+                      
+                  }
                fetch(all_js_posts)
             .then(blob => blob.json())
             .then(data => {
@@ -37,6 +49,12 @@ class Sidebar extends Component {
                 let mainmenu =[]
                 for (var i=0;i<data.results.length;i++)
                 {
+                               var day="",month="",year="",fulldate="";
+            var datefull = new Date(data.results[i].created[0].value.toString());
+           day = datefull.getDate();
+            month = datefull.getMonth();
+             year = datefull.getFullYear();
+            fulldate=day+"/"+month+"/"+year
                     if(i==3){
                         break;
                     }
@@ -48,7 +66,7 @@ class Sidebar extends Component {
 
                                 title: data.results[i].title[0].value,
                                 image: data.results[i][reactjs_video.image][0].url,
-                                date: data.results[i].created[0].value
+                                date:fulldate
 
                             };
                             mainmenu.push(blogs);
@@ -56,12 +74,16 @@ class Sidebar extends Component {
                     }
                     else
                     {
+                        var bodeImage="";
+                        if(reactjs_blog.image.length>0){
+                            bodeImage=data.results[i][reactjs_blog.image][0].url
+                            
+                        }
                             let blogs = {
                                 nid: data.results[i].nid[0].value,
                                 title: data.results[i].title[0].value,
-                                //image: data.results[i][reactjs_blog.image][0].url,
-                                date: data.results[i].created[0].value
-
+                                image: bodeImage,
+                                date: fulldate
                             };
                             mainmenu.push(blogs);
 
