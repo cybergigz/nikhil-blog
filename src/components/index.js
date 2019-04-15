@@ -111,7 +111,7 @@ fetchDataAPI=(page_num)=>{
         fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-              var reactjs_blog=[],reactjs_video=[];
+          var reactjs_blog=[],reactjs_video=[],reactjs_article=[];
               for(var i=0;i<data3.types.length;i++)
                   {
                       if(data3.types[i].node_type=="reactjs_blog")
@@ -123,8 +123,14 @@ fetchDataAPI=(page_num)=>{
                                                            reactjs_video= data3.types[i].fields;
 
                               }
+                      else if(data3.types[i].node_type=="article")
+                              {
+                                                           reactjs_article= data3.types[i].fields;
+
+                              }
                       
                   }
+              var article_body=reactjs_article.body,article_image=reactjs_article.image;
             var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
                      var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
             
@@ -153,7 +159,7 @@ fetchDataAPI=(page_num)=>{
                                }
                             
                               else{
-                                 bodeImage=data.results[i].field_image[0].url
+                                 bodeImage=data.results[i][article_image][0].url
                                 
                             }
                             
@@ -180,7 +186,7 @@ fetchDataAPI=(page_num)=>{
                    
                         }
                     
-                    else if(data.results[i].body !=undefined)
+                    else if(data.results[i][article_body] !=undefined)
                         {
                              var bodeImage="";          
                         if(reactjs_blog.image.length>0){
@@ -278,13 +284,20 @@ fetchDataAPI=(page_num)=>{
 
     for(var c=0;c<this.state.blogs.length;c++)
         {
-            if(this.state.blogs[c].typeId.length >0){
+            if(this.state.blogs[c].typeId!=""){
                 fetch(category_type(this.state.blogs[c].typeId))
             .then(blob => blob.json())
             .then(data => {
-                    console.log(data.name[0].value);
+                    if(data.name!=undefined){
                 menutype.push(data.name[0].value);
-                 this.setState({type:menutype})
+                       }
+                    else
+                        {
+                             menutype.push("");
+                        }
+                                     this.setState({type:menutype})
+
+                  console.log(menutype);
                  
 
              })

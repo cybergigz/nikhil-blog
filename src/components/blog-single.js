@@ -34,7 +34,7 @@ class blogsingle extends Component {
           fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-            var reactjs_blog=[],reactjs_video=[];
+            var reactjs_blog=[],reactjs_video=[],reactjs_article=[];
               for(var i=0;i<data3.types.length;i++)
                   {
                       if(data3.types[i].node_type=="reactjs_blog")
@@ -46,8 +46,14 @@ class blogsingle extends Component {
                                                            reactjs_video= data3.types[i].fields;
 
                               }
+                      else if(data3.types[i].node_type=="article")
+                              {
+                                                           reactjs_article= data3.types[i].fields;
+
+                              }
                       
                   }
+              var article_body=reactjs_article.body,article_image=reactjs_article.image;
               
         fetch(category_details(xId))
             .then(blob => blob.json())
@@ -66,12 +72,20 @@ var day="",month="",year="",fulldate="";
            
             if(data[video_field] !=null)
                {
-                  typeId= data[video_field][0].target_id;
+                   if(data[video_field] !=undefined)
+                       {
+                                            typeId= data[video_field][0].target_id;
+ 
+                       }
                    if(data[embded_video] !=null )
                       {
-                          var id = getYouTubeID(data[embded_video][0].value);
+                          if(data[embded_video].length>0)
+                              {
+                                    var id = getYouTubeID(data[embded_video][0].value);
 
-                                         video="https://www.youtube.com/embed/"+id+"";
+                                         video="https://www.youtube.com/embed/"+id+"";  
+                              }
+                      
 
                       }
                     var bodyblog="";          
@@ -96,9 +110,9 @@ var day="",month="",year="",fulldate="";
                             }
                             else
                                 {
-                                        if(data.field_image !=undefined)
+                                        if(data[article_image] !=undefined)
                                        {
-                                 bodeImage=data.field_image[0].url;
+                                 bodeImage=data[article_image][0].url;
                                 
                             }
                                 }
@@ -110,7 +124,7 @@ var day="",month="",year="",fulldate="";
                }
                else
                {
-                   
+                  
                          var bodeImage="";    
                         if(reactjs_blog.image.length>0){
                             if(data[reactjs_blog.image] !=undefined){
@@ -135,7 +149,7 @@ if(data[blog_body_category] !=undefined)
                                          body=data[blog_body][0].value;
 }
 else {
-body=data.body[0].value;
+body=data[article_body][0].value;
 
 }
                       
@@ -155,13 +169,13 @@ body=data.body[0].value;
 
                                 };
                                 this.setState({blog:blog})
-if(typeId.length>0)
+if(typeId !=null)
     {
          fetch(category_type(typeId))
                     .then(blob2 => blob2.json())
                     .then(data2 => {
-
-                        nameType=data2.name[0].value;
+if(data2.name !=undefined){
+          nameType=data2.name[0].value;
                        
                                 let blog={
                                     nid:data.nid[0].value,
@@ -176,6 +190,9 @@ if(typeId.length>0)
                                 };
                                 this.setState({blog:blog})
                             
+   
+   }
+                  
                      
 
 
