@@ -87,7 +87,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                
                         if(article_image.length>0){
                             if(mainmenu[article_image] !=undefined){
-                                if(mainmenu[article_body].length>0){
+                                if(mainmenu[article_image].length>0){
                               
                  bodeImage=mainmenu[article_image][0].url
                                 }
@@ -96,8 +96,12 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                         }
                     if(mainmenu[article_category] !=undefined)
                        {
+                             if(mainmenu[article_category].length>0){
+                                                        typeId=mainmenu[article_category][0].target_id;
 
-                       typeId=mainmenu[article_category][0].target_id;
+                             }
+                           
+
                        }
                     if(mainmenu[article_body] !=undefined)
                        {

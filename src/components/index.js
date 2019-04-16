@@ -166,7 +166,10 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                         }
                     if(mainmenu[i][article_category] !=undefined)
                        {
+                           if(mainmenu[i][article_category].length>0)
+                                   {
                        typeId=mainmenu[i][article_category][0].target_id;
+                                   }
                        }
                      
 

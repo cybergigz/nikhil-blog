@@ -60,13 +60,18 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                        var bodeImage="";          
                         if(article_image.length>0){
                             if(mainmenu[i][article_image] !=undefined){
+                                if(mainmenu[i][article_image].length>0){
                  bodeImage=mainmenu[i][article_image][0].url
+                                   }
 
                                }   
                         }
                     if(mainmenu[i][article_category] !=undefined)
                        {
+                                                           if(mainmenu[i][article_category].length>0){
+
                        typeId=mainmenu[i][article_category][0].target_id;
+                                                           }
                        }
                     
                     
