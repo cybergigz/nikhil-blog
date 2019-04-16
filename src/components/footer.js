@@ -48,21 +48,30 @@ class Footer extends Component {
                 if(mainmenu[i].type[0].target_id ===article_type){
                          var typeId="",typename="",image="";
       var day="",month="",year="",fulldate="";
-    var datefull = new Date(mainmenu[i].created[0].value.toString());
+    var datefull = new Date(mainmenu[i].changed[0].value.toString());
+           
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
         day = datefull.getDate();
-            month = datefull.getMonth();
+            month =monthNames[datefull.getMonth()];
              year = datefull.getFullYear();
-            fulldate=day+"/"+month+"/"+year;
+            fulldate=month+" "+day+" "+year;
                        var bodeImage="";          
                         if(article_image.length>0){
                             if(mainmenu[i][article_image] !=undefined){
+                                if(mainmenu[i][article_image].length>0){
                  bodeImage=mainmenu[i][article_image][0].url
+                                   }
 
                                }   
                         }
                     if(mainmenu[i][article_category] !=undefined)
                        {
+                                                           if(mainmenu[i][article_category].length>0){
+
                        typeId=mainmenu[i][article_category][0].target_id;
+                                                           }
                        }
                     
                     

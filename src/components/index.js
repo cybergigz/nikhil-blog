@@ -4,6 +4,8 @@ import Header from "./header.js";
 import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
+import  axios from "axios";
+
 
 import ScrollAnimation from 'react-animate-on-scroll';
 import {all_posts,category_type,setting_api} from './../config/config';
@@ -11,6 +13,7 @@ import OwlCarousel, { Options } from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import "animate.css/animate.min.css";
+
 
 
 
@@ -48,7 +51,7 @@ class index extends Component {
         
     };
    
-componentWillMount=()=>
+componentDidMount=()=>
 {
 this.pageChange({index:0});
     
@@ -105,11 +108,12 @@ prevClick=()=>{
        this.pageChange({index:pageSelected-1});
        }
 }
-fetchDataAPI2=(page_num)=>{
+ fetchDataAPI2= (page_num)=>{
+     this.setState({type:[]});
     let mainmenu =[],mainmenustate=[];
      fetch(all_posts(page_num))
-            .then(blob => blob.json())
-            .then(data => {
+            .then((blob) =>  blob.json())
+            .then( (data) => {
          if(data.results.length==0)
              {
                  window.location.href="/";
@@ -117,8 +121,8 @@ fetchDataAPI2=(page_num)=>{
              this.setState({itemPerPage:data.pager.items_per_page});
                       this.setState({pager:data.pager});
          mainmenu=data.results;
-           fetch(setting_api)
-            .then(blob3 => blob3.json())
+ fetch(setting_api)
+            .then((blob3) => blob3.json())
             .then(data3 => {
      var article_body="",article_image="",article_category="",article_type="";
                            
@@ -140,25 +144,38 @@ fetchDataAPI2=(page_num)=>{
                 if(mainmenu[i].type[0].target_id ===article_type){
                          var typeId="",typename="",image="";
       var day="",month="",year="",fulldate="";
-    var datefull = new Date(mainmenu[i].created[0].value.toString());
+    var datefull = new Date(mainmenu[i].changed[0].value.toString());
+             
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
         day = datefull.getDate();
-            month = datefull.getMonth();
+            month =monthNames[datefull.getMonth()];
              year = datefull.getFullYear();
-            fulldate=day+"/"+month+"/"+year;
+            fulldate=month+" "+day+" "+year;
                        var bodeImage="";          
                         if(article_image.length>0){
                             if(mainmenu[i][article_image] !=undefined){
-                 bodeImage=mainmenu[i][article_image][0].url
+                                if(mainmenu[i][article_image].length>0)
+                                   {
+                                                    bodeImage=mainmenu[i][article_image][0].url
+
+                                   }
 
                                }   
                         }
                     if(mainmenu[i][article_category] !=undefined)
                        {
+                           if(mainmenu[i][article_category].length>0)
+                                   {
                        typeId=mainmenu[i][article_category][0].target_id;
+                                   }
                        }
-                    
-                    
-                                  let blogs = {
+                     
+
+                          
+                  
+                              let blogs = {
                                 nid: mainmenu[i].nid[0].value,
                           typenameid:i,
                                 typeId:typeId,
@@ -168,13 +185,7 @@ fetchDataAPI2=(page_num)=>{
                                 type:""
 
                             };
-                    console.log(typeId);
-                          mainmenustate.push(blogs);
-
-                          
-
-                            
-                    
+                          mainmenustate.push(blogs);                
                     
                    }
                 
@@ -182,49 +193,60 @@ fetchDataAPI2=(page_num)=>{
                 
                 
         }
+                          
+                                                                         this.setState({blogs:mainmenustate});                
+
                                      
-                     this.setState({blogs:mainmenustate});                
                                      
                                      
                                      
                                  }
-                     let menutype=[];
-           // this.pageChange({index:0});
-
-    for(var c=0;c<this.state.blogs.length;c++)
-        {
-            if(this.state.blogs[c].typeId!=""){
-                fetch(category_type(this.state.blogs[c].typeId))
-            .then(blob => blob.json())
-            .then(data => {
-                    if(data.name!=undefined){
-                menutype.push(data.name[0].value);
-                       }
-                    else
-                        {
-                             menutype.push("");
-                        }
-                                     this.setState({type:menutype})
-
-                  console.log(menutype);
                  
 
-             })
-               }
-            else
-                {
-                     menutype.push("");
-                 this.setState({type:menutype})
-                }
-            
-        
-    }
+
+                    this.getype();
 
                
            });
                     
 
      });
+}
+ 
+ getype=()=>{
+         let menutype=[];
+           // this.pageChange({index:0});
+var item=this.state.blogs;
+     var mainObject = {},
+    promises = [];
+     var myUrl="";
+
+item.forEach(function(singleElement){
+  myUrl = singleElement.typeId;
+  promises.push(axios.get(category_type(myUrl)))
+});
+
+axios.all(promises).then((results)=> {
+    results.forEach((response)=> {
+       console.log( response.data.tid[0].value);
+          if(response.data.name!=undefined){
+                      
+
+                menutype.push(response.data.name[0].value);
+                        
+                       }
+                    else
+                        {
+                             menutype.push("");
+                        }
+                                   
+                 
+                
+                    this.setState({type:menutype});
+    })
+});
+
+       
 }
 
 
@@ -411,7 +433,7 @@ fetchDataAPI2=(page_num)=>{
 }
                                                 <div className="blog-content-body">
                                                     <div className="post-meta">
-                                                        <span className="category">{this.state.type[item.typenameid]}</span>
+                                                        <span className="category">{this.state.type[index]}</span>
                                                         <span className="mr-2">{item.date} </span> 
                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
                                                     </div>

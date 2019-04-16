@@ -82,7 +82,6 @@ if (mapIndex!=undefined)
                              }
                      
                      }
-                     console.log(mainmenu);
                    
 this.setState({menuData:mainmenu})
 
