@@ -72,7 +72,7 @@ let xxname="";
 
         }
         
-           this.fetchDataAPI(index.index);
+           this.fetchDataAPI2(index.index);
 
     
  
@@ -99,36 +99,15 @@ prevClick=()=>{
        this.pageChange({index:pageSelected-1});
        }
 }
-fetchDataAPI=(page_num)=>{
-     var xId = GetParameterValues('id');
+fetchDataAPI2=(page_num)=>{
+        let mainmenu =[],mainmenustate=[];
+      var xId = GetParameterValues('id');
         var xname =replce_name(GetParameterValues('name'));
-this.xxname=xname;
         if (xId==null)
         {
             window.location.href="/";
         }
-        this.setState({name:xname})
- fetch(setting_api)
-            .then(blob3 => blob3.json())
-            .then(data3 => {
-               var reactjs_blog=[],reactjs_video=[];
-              for(var i=0;i<data3.types.length;i++)
-                  {
-                      if(data3.types[i].node_type=="reactjs_blog")
-                          {
-                             reactjs_blog= data3.types[i].fields;
-                          }
-                      else if(data3.types[i].node_type=="reactjs_videos")
-                              {
-                                                           reactjs_video= data3.types[i].fields;
-
-                              }
-                      
-                  }
-     
-     var video_field=   reactjs_video.taxonomies[0].field,blog_body_category=reactjs_blog.taxonomies[0].field,blog_body=reactjs_blog.body,blog_image=reactjs_blog.image;
-                     var embded_video=reactjs_video.embedded_video,embded_video_image=reactjs_video.image;
-     
+        this.setState({name:xname});
      fetch(list_of_category_type(xId,page_num))
             .then(blob => blob.json())
             .then(data => {
@@ -137,61 +116,88 @@ this.xxname=xname;
                     window.location.href="/";
 
                 }
-                let mainmenu =[]
-         this.setState({itemPerPage:data.pager.items_per_page})
-         this.setState({pager:data.pager})
+         
+           this.setState({itemPerPage:data.pager.items_per_page});
+                      this.setState({pager:data.pager});
+         mainmenu=data.results;
+          fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+     var article_body="",article_image="",article_category="",article_type="";
+                           
 
-                for (var i=0;i<data.results.length;i++)
-                {
-                    var day="",month="",year="",fulldate="";
-            var datefull = new Date(data.results[i].created[0].value.toString());
-           day = datefull.getDate();
+                             for(var x=0;x<data3.types.length;x++)
+                                 {
+     article_body=data3.types[x].fields.body;
+    article_image=data3.types[x].fields.image;
+     article_type=data3.types[x].node_type;   
+                                     if(data3.types[x].fields.taxonomies.length>0)
+                                         {
+                                                 article_category=data3.types[x].fields.taxonomies[0].field;
+
+                                         }
+        for(var i=0;i<mainmenu.length;i++)
+            {
+  
+            //image, typeId
+                if(mainmenu[i].type[0].target_id ===article_type){
+                         var typeId="",typename="",image="";
+      var day="",month="",year="",fulldate="";
+    var datefull = new Date(mainmenu[i].created[0].value.toString());
+        day = datefull.getDate();
             month = datefull.getMonth();
              year = datefull.getFullYear();
-            fulldate=day+"/"+month+"/"+year
-            
-                    if (data.results[i][embded_video_image] !=null)
-                    {
+            fulldate=day+"/"+month+"/"+year;
+                       var bodeImage="";          
+                        if(article_image.length>0){
+                            if(mainmenu[i][article_image] !=undefined){
+                 bodeImage=mainmenu[i][article_image][0].url
 
-                            let blogs = {
-                                nid: data.results[i].nid[0].value,
-
-                                title: data.results[i].title[0].value,
-                                image: data.results[i][embded_video_image][0].url,
-                                date: fulldate
-
-                            };
-                            mainmenu.push(blogs);
-
-                    }
-                    else
-                    {
-                         var bodeImage="";          
-                        if(reactjs_blog.image.length>0){
-                            bodeImage=data.results[i][reactjs_blog.image][0].url
-                            
+                               }   
                         }
-                            let blogs = {
-                                nid: data.results[i].nid[0].value,
-                                title: data.results[i].title[0].value,
-                               image: bodeImage,
-                                date: fulldate
+                    if(mainmenu[i][article_category] !=undefined)
+                       {
+                       typeId=mainmenu[i][article_category][0].target_id;
+                       }
+                    
+                    
+                                  let blogs = {
+                                nid: mainmenu[i].nid[0].value,
+                          typenameid:i,
+                                typeId:typeId,
+                                title: mainmenu[i].title[0].value,
+                                image: bodeImage,
+                                date:fulldate, 
+                                type:""
 
                             };
-                            mainmenu.push(blogs);
+                    console.log(typeId);
+                          mainmenustate.push(blogs);
 
-                    }
+                          
 
-
-
-
-                }
-                this.setState({blogs:mainmenu})
-
-            })
- });
-    
+                            
+                    
+                    
+                   }
+                
+                
+                
+                
+        }
+                                     
+                     this.setState({blogs:mainmenustate});                
+                                     
+                                     
+                                     
+                                 }
+                   
+               
+           });
+         
+     });
 }
+
     render() {
     
      const itemPerPage=this.state.itemPerPage;
