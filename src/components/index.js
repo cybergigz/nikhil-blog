@@ -17,6 +17,7 @@ import "animate.css/animate.min.css";
 
 
 
+
 class index extends Component {
     state={
         type:[],
@@ -48,7 +49,7 @@ class index extends Component {
         
     };
    
-componentWillMount=()=>
+componentDidMount=()=>
 {
 this.pageChange({index:0});
     
@@ -105,7 +106,8 @@ prevClick=()=>{
        this.pageChange({index:pageSelected-1});
        }
 }
-fetchDataAPI2=(page_num)=>{
+ fetchDataAPI2=(page_num)=>{
+     this.setState({type:[]});
     let mainmenu =[],mainmenustate=[];
      fetch(all_posts(page_num))
             .then(blob => blob.json())
@@ -152,7 +154,11 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                        var bodeImage="";          
                         if(article_image.length>0){
                             if(mainmenu[i][article_image] !=undefined){
-                 bodeImage=mainmenu[i][article_image][0].url
+                                if(mainmenu[i][article_image].length>0)
+                                   {
+                                                    bodeImage=mainmenu[i][article_image][0].url
+
+                                   }
 
                                }   
                         }
@@ -160,9 +166,11 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                        {
                        typeId=mainmenu[i][article_category][0].target_id;
                        }
-                    
-                    
-                                  let blogs = {
+                     
+
+                          
+                  
+                              let blogs = {
                                 nid: mainmenu[i].nid[0].value,
                           typenameid:i,
                                 typeId:typeId,
@@ -172,13 +180,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                 type:""
 
                             };
-                    console.log(typeId);
-                          mainmenustate.push(blogs);
-
-                          
-
-                            
-                    
+                          mainmenustate.push(blogs);                
                     
                    }
                 
@@ -186,43 +188,18 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                 
                 
         }
+                          
+                                                                         this.setState({blogs:mainmenustate});                
+
                                      
-                     this.setState({blogs:mainmenustate});                
                                      
                                      
                                      
                                  }
-                     let menutype=[];
-           // this.pageChange({index:0});
-
-    for(var c=0;c<this.state.blogs.length;c++)
-        {
-            if(this.state.blogs[c].typeId!=""){
-                fetch(category_type(this.state.blogs[c].typeId))
-            .then(blob => blob.json())
-            .then(data => {
-                    if(data.name!=undefined){
-                menutype.push(data.name[0].value);
-                       }
-                    else
-                        {
-                             menutype.push("");
-                        }
-                                     this.setState({type:menutype})
-
-                  console.log(menutype);
                  
 
-             })
-               }
-            else
-                {
-                     menutype.push("");
-                 this.setState({type:menutype})
-                }
-            
-        
-    }
+
+                    this.getype();
 
                
            });
@@ -230,6 +207,60 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 
      });
 }
+ 
+ getype=()=>{
+         let menutype=[];
+           // this.pageChange({index:0});
+var menuu=this.state.blogs;
+     console.log(menuu);
+               menuu.forEach(async(item, c) =>{
+      if(menuu[c].typeId!=""){
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+          console.log(menuu[c].typeId);
+                 //   alert(menuu[c].typeId);
+
+
+var x=menuu[c].typeId;
+              await  fetch(category_type(x))
+            .then(blob => blob.json())
+            .then(data => {
+                    
+                    
+                    if(data.name!=undefined){
+
+                menutype.push(data.name[0].value);
+                       //  this.setState({type:menutype})
+                        
+                       }
+                    else
+                        {
+                             menutype.push("");
+                        }
+                                   
+                 
+                
+                                       console.log(menutype);
+                    this.setState({type:menutype});
+
+             })
+               }
+            else
+                {
+                     menutype.push("");
+                                     this.setState({type:menutype})
+
+                }
+});
+    
+
+ }
 
 
 
@@ -415,7 +446,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 }
                                                 <div className="blog-content-body">
                                                     <div className="post-meta">
-                                                        <span className="category">{this.state.type[item.typenameid]}</span>
+                                                        <span className="category">{this.state.type[index]}</span>
                                                         <span className="mr-2">{item.date} </span> 
                                                         <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
                                                     </div>

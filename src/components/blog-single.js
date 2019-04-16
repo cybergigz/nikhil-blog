@@ -98,7 +98,10 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                        }
                     if(mainmenu[article_body] !=undefined)
                        {
-                       body_post=mainmenu[article_body][0].value;
+                           if(mainmenu[article_body].length>0){
+                                                     body_post=mainmenu[article_body][0].value;
+
+                              }
                        }
                     if(mainmenu[articla_video] !=undefined)
                        {
