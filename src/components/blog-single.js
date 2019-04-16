@@ -87,18 +87,29 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                
                         if(article_image.length>0){
                             if(mainmenu[article_image] !=undefined){
+                                if(mainmenu[article_image].length>0){
+                              
                  bodeImage=mainmenu[article_image][0].url
+                                }
 
                                }   
                         }
                     if(mainmenu[article_category] !=undefined)
                        {
+                             if(mainmenu[article_category].length>0){
+                                                        typeId=mainmenu[article_category][0].target_id;
 
-                       typeId=mainmenu[article_category][0].target_id;
+                             }
+                           
+
                        }
                     if(mainmenu[article_body] !=undefined)
                        {
-                       body_post=mainmenu[article_body][0].value;
+                           if(mainmenu[article_body].length>0){
+                              
+                               
+                                                     body_post=strip_html_tags(mainmenu[article_body][0].value);
+                              }
                        }
                     if(mainmenu[articla_video] !=undefined)
                        {
@@ -111,6 +122,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                            
                     
                        }
+                      document.title ="React AppCategory:"+mainmenu.title[0].value;
                     
                     
                                   let blog = {
@@ -183,22 +195,28 @@ if(data2.name !=undefined){
 
                                     <div className="row mb-5">
                                         <div className="col-md-12 mb-4">
-                                            {
-                                                (this.state.blog.video !=undefined)?
-                                                <iframe width="800" height="480" frameBorder="0"
-                                                allowFullScreen="allowfullscreen"
-                                                src={this.state.blog.video}></iframe>
-                                                    :
+            {
+        
+        
         (this.state.blog.body.length > 0)?
                                                     <div className="post-content-body">
-              <p>
-                                                        {this.state.blog.body}</p>
+              
+                                                        {this.state.blog.body}
             
     
             </div>
         :
         <p></p>
                                             }
+                                            {
+                                                (this.state.blog.video !=undefined)?
+                                                <iframe width="800" height="480" frameBorder="0"
+                                                allowFullScreen="allowfullscreen"
+                                                src={this.state.blog.video}></iframe>
+                                                    :
+        <p></p>
+    }
+
 
 { (this.state.blog.image.length>0)?
                                             <img src={this.state.blog.image} alt="Image placeholder"  className="img-fluid"/>
@@ -425,5 +443,10 @@ function GetParameterValues(param) {
             return urlparam[1];
         }
     }
+}
+function strip_html_tags(str)
+{
+   str = str.toString();
+  return str.replace(/<[^>]*>/g, '');
 }
 export default blogsingle;
