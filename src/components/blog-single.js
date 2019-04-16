@@ -122,6 +122,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                            
                     
                        }
+                      document.title ="React AppCategory:"+mainmenu.title[0].value;
                     
                     
                                   let blog = {
