@@ -25,78 +25,95 @@ class Sidebar extends Component {
 
     componentWillMount=()=> {
 
-         fetch(setting_api)
-            .then(blob2 => blob2.json())
-            .then(data2 => {
-          var reactjs_blog=[],reactjs_video=[];
-              for(var i=0;i<data2.types.length;i++)
-                  {
-                      if(data2.types[i].node_type=="reactjs_blog")
-                          {
-                             reactjs_blog= data2.types[i].fields;
-                          }
-                      else if(data2.types[i].node_type=="reactjs_videos")
-                              {
-                                                           reactjs_video= data2.types[i].fields;
-
-                              }
-                      
-                  }
-               fetch(all_js_posts)
+          let mainmenu =[],mainmenustate=[];
+     fetch(all_js_posts)
             .then(blob => blob.json())
             .then(data => {
-          
-                let mainmenu =[]
-                for (var i=0;i<data.results.length;i++)
-                {
-                               var day="",month="",year="",fulldate="";
-            var datefull = new Date(data.results[i].created[0].value.toString());
-           day = datefull.getDate();
+       
+         mainmenu=data.results;
+           fetch(setting_api)
+            .then(blob3 => blob3.json())
+            .then(data3 => {
+     var article_body="",article_image="",article_category="",article_type="";
+                           
+
+                             for(var x=0;x<data3.types.length;x++)
+                                 {
+     article_body=data3.types[x].fields.body;
+    article_image=data3.types[x].fields.image;
+     article_type=data3.types[x].node_type;   
+                                     if(data3.types[x].fields.taxonomies.length>0)
+                                         {
+                                                 article_category=data3.types[x].fields.taxonomies[0].field;
+
+                                         }
+        for(var i=0;i<mainmenu.length;i++)
+            {
+  
+            //image, typeId
+                if(mainmenu[i].type[0].target_id ===article_type){
+                         var typeId="",typename="",image="";
+      var day="",month="",year="",fulldate="";
+    var datefull = new Date(mainmenu[i].created[0].value.toString());
+        day = datefull.getDate();
             month = datefull.getMonth();
              year = datefull.getFullYear();
-            fulldate=day+"/"+month+"/"+year
-                    if(i==3){
-                        break;
-                    }
-                    if (data.results[i][reactjs_video.image] !=null)
-                    {
+            fulldate=day+"/"+month+"/"+year;
+                       var bodeImage="";          
+                        if(article_image.length>0){
+                            if(mainmenu[i][article_image] !=undefined){
+                 bodeImage=mainmenu[i][article_image][0].url
 
-                            let blogs = {
-                                nid: data.results[i].nid[0].value,
-
-                                title: data.results[i].title[0].value,
-                                image: data.results[i][reactjs_video.image][0].url,
-                                date:fulldate
-
-                            };
-                            mainmenu.push(blogs);
-
-                    }
-                    else
-                    {
-                        var bodeImage="";
-                        if(reactjs_blog.image.length>0){
-                            bodeImage=data.results[i][reactjs_blog.image][0].url
-                            
+                               }   
                         }
-                            let blogs = {
-                                nid: data.results[i].nid[0].value,
-                                title: data.results[i].title[0].value,
+                    if(mainmenu[i][article_category] !=undefined)
+                       {
+                       typeId=mainmenu[i][article_category][0].target_id;
+                       }
+                    
+                    
+                                  let blogs = {
+                                nid: mainmenu[i].nid[0].value,
+                                title: mainmenu[i].title[0].value,
                                 image: bodeImage,
-                                date: fulldate
+                                date:fulldate
                             };
-                            mainmenu.push(blogs);
+                    console.log(typeId);
+                          mainmenustate.push(blogs);
+                       if(mainmenustate.length===3)
+                                         {
+                                             break;
+                                         }
 
-                    }
+                          
 
+                            
+                    
+                    
+                   }
+                
+                
+                
+                
+        }
+                                     if(mainmenustate.length===3)
+                                         {
+                                             break;
+                                         }
+                                 }
+                                     
+                     this.setState({blogs:mainmenustate});                
+                                     
+                                     
+                                     
+        
 
+               
+           });
+                    
 
+     });
 
-                }
-                this.setState({blogs:mainmenu})
-
-            })
-         });
       
     }
     
