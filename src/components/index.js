@@ -108,12 +108,12 @@ prevClick=()=>{
        this.pageChange({index:pageSelected-1});
        }
 }
- fetchDataAPI2= async(page_num)=>{
+ fetchDataAPI2= (page_num)=>{
      this.setState({type:[]});
     let mainmenu =[],mainmenustate=[];
-    await fetch(all_posts(page_num))
-            .then(async(blob) => await blob.json())
-            .then(async (data) => {
+     fetch(all_posts(page_num))
+            .then((blob) =>  blob.json())
+            .then( (data) => {
          if(data.results.length==0)
              {
                  window.location.href="/";
@@ -121,8 +121,8 @@ prevClick=()=>{
              this.setState({itemPerPage:data.pager.items_per_page});
                       this.setState({pager:data.pager});
          mainmenu=data.results;
-await fetch(setting_api)
-            .then(async(blob3) =>await blob3.json())
+ fetch(setting_api)
+            .then((blob3) => blob3.json())
             .then(data3 => {
      var article_body="",article_image="",article_category="",article_type="";
                            
@@ -210,49 +210,41 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
      });
 }
  
- getype=async()=>{
+ getype=()=>{
          let menutype=[];
            // this.pageChange({index:0});
-var menuu=this.state.blogs;
-         menuu.forEach((item, c) =>{
-      if(item.typeId!=""){
+var item=this.state.blogs;
+     var mainObject = {},
+    promises = [];
+     var myUrl="";
 
+item.forEach(function(singleElement){
+  myUrl = singleElement.typeId;
+  promises.push(axios.get(category_type(myUrl)))
+});
 
-var x=item.typeId;
+axios.all(promises).then((results)=> {
+    results.forEach((response)=> {
+       console.log( response.data.tid[0].value);
+          if(response.data.name!=undefined){
+                      
 
-          axios.get(category_type(x))
-  .then(async (response)=> {
-              
-                   if(response.data.name!=undefined){
-              await  menutype.push(response.data.name[0].value);
+                menutype.push(response.data.name[0].value);
                         
                        }
                     else
                         {
-                            await menutype.push("");
+                             menutype.push("");
                         }
                                    
                  
                 
                     this.setState({type:menutype});
-  })
-  .catch((error)=> {
-    console.log(error);
-  });
-      }
-             
-            else
-                {
-                     menutype.push("");
-                                     this.setState({type:menutype})
+    })
+});
 
-                }
-
-    
-
- }
-
-)}
+       
+}
 
 
 
