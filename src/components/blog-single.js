@@ -87,7 +87,10 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                
                         if(article_image.length>0){
                             if(mainmenu[article_image] !=undefined){
+                                if(mainmenu[article_body].length>0){
+                              
                  bodeImage=mainmenu[article_image][0].url
+                                }
 
                                }   
                         }
@@ -99,8 +102,9 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                     if(mainmenu[article_body] !=undefined)
                        {
                            if(mainmenu[article_body].length>0){
-                                                     body_post=mainmenu[article_body][0].value;
-
+                              
+                               
+                                                     body_post=strip_html_tags(mainmenu[article_body][0].value);
                               }
                        }
                     if(mainmenu[articla_video] !=undefined)
@@ -428,5 +432,10 @@ function GetParameterValues(param) {
             return urlparam[1];
         }
     }
+}
+function strip_html_tags(str)
+{
+   str = str.toString();
+  return str.replace(/<[^>]*>/g, '');
 }
 export default blogsingle;
