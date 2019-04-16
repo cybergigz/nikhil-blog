@@ -194,12 +194,9 @@ if(data2.name !=undefined){
 
                                     <div className="row mb-5">
                                         <div className="col-md-12 mb-4">
-                                            {
-                                                (this.state.blog.video !=undefined)?
-                                                <iframe width="800" height="480" frameBorder="0"
-                                                allowFullScreen="allowfullscreen"
-                                                src={this.state.blog.video}></iframe>
-                                                    :
+            {
+        
+        
         (this.state.blog.body.length > 0)?
                                                     <div className="post-content-body">
               
@@ -210,6 +207,15 @@ if(data2.name !=undefined){
         :
         <p></p>
                                             }
+                                            {
+                                                (this.state.blog.video !=undefined)?
+                                                <iframe width="800" height="480" frameBorder="0"
+                                                allowFullScreen="allowfullscreen"
+                                                src={this.state.blog.video}></iframe>
+                                                    :
+        <p></p>
+    }
+
 
 { (this.state.blog.image.length>0)?
                                             <img src={this.state.blog.image} alt="Image placeholder"  className="img-fluid"/>
