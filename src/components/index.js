@@ -4,6 +4,8 @@ import Header from "./header.js";
 import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
+import  axios from "axios";
+
 
 import ScrollAnimation from 'react-animate-on-scroll';
 import {all_posts,category_type,setting_api} from './../config/config';
@@ -106,12 +108,12 @@ prevClick=()=>{
        this.pageChange({index:pageSelected-1});
        }
 }
- fetchDataAPI2=(page_num)=>{
+ fetchDataAPI2= async(page_num)=>{
      this.setState({type:[]});
     let mainmenu =[],mainmenustate=[];
-     fetch(all_posts(page_num))
-            .then(blob => blob.json())
-            .then(data => {
+    await fetch(all_posts(page_num))
+            .then(async(blob) => await blob.json())
+            .then(async (data) => {
          if(data.results.length==0)
              {
                  window.location.href="/";
@@ -119,8 +121,8 @@ prevClick=()=>{
              this.setState({itemPerPage:data.pager.items_per_page});
                       this.setState({pager:data.pager});
          mainmenu=data.results;
-           fetch(setting_api)
-            .then(blob3 => blob3.json())
+await fetch(setting_api)
+            .then(async(blob3) =>await blob3.json())
             .then(data3 => {
      var article_body="",article_image="",article_category="",article_type="";
                            
@@ -208,59 +210,49 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
      });
 }
  
- getype=()=>{
+ getype=async()=>{
          let menutype=[];
            // this.pageChange({index:0});
 var menuu=this.state.blogs;
-     console.log(menuu);
-               menuu.forEach(async(item, c) =>{
-      if(menuu[c].typeId!=""){
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-          console.log(menuu[c].typeId);
-                 //   alert(menuu[c].typeId);
+         menuu.forEach((item, c) =>{
+      if(item.typeId!=""){
 
 
-var x=menuu[c].typeId;
-              await  fetch(category_type(x))
-            .then(blob => blob.json())
-            .then(data => {
-                    
-                    
-                    if(data.name!=undefined){
+var x=item.typeId;
 
-                menutype.push(data.name[0].value);
-                       //  this.setState({type:menutype})
+          axios.get(category_type(x))
+  .then(async (response)=> {
+              
+                   if(response.data.name!=undefined){
+              await  menutype.push(response.data.name[0].value);
                         
                        }
                     else
                         {
-                             menutype.push("");
+                            await menutype.push("");
                         }
                                    
                  
                 
-                                       console.log(menutype);
                     this.setState({type:menutype});
-
-             })
-               }
+  })
+  .catch((error)=> {
+    console.log(error);
+  });
+      }
+             
             else
                 {
                      menutype.push("");
                                      this.setState({type:menutype})
 
                 }
-});
+
     
 
  }
+
+)}
 
 
 

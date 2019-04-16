@@ -194,8 +194,8 @@ if(data2.name !=undefined){
                                                     :
         (this.state.blog.body.length > 0)?
                                                     <div className="post-content-body">
-              <p>
-                                                        {this.state.blog.body}</p>
+              
+                                                        {this.state.blog.body}
             
     
             </div>
