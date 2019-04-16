@@ -75,11 +75,15 @@ articla_video=data3.types[x].fields.embedded_video;
                 if(mainmenu.type[0].target_id ===article_type){
                          var typeId="",typename="",bodeImage="",body_post="",video_post;
       var day="",month="",year="",fulldate="";
-    var datefull = new Date(mainmenu.created[0].value.toString());
+    var datefull = new Date(mainmenu.changed[0].value.toString());
+              
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
         day = datefull.getDate();
-            month = datefull.getMonth();
+            month =monthNames[datefull.getMonth()];
              year = datefull.getFullYear();
-            fulldate=day+"/"+month+"/"+year;
+            fulldate=month+" "+day+" "+year;
                                
                         if(article_image.length>0){
                             if(mainmenu[article_image] !=undefined){
