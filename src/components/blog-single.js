@@ -52,13 +52,14 @@ class blogsingle extends Component {
            fetch(setting_api)
             .then(blob3 => blob3.json())
             .then(data3 => {
-     var article_body="",article_image="",article_category="",article_type="",articla_video="";
+     var article_body="",article_image="",article_remoteimage="",article_category="",article_type="",articla_video="";
                            
 
                              for(var x=0;x<data3.types.length;x++)
                                  {
      article_body=data3.types[x].fields.body;
     article_image=data3.types[x].fields.image;
+    article_remoteimage=data3.types[x].fields.remote_image;
      article_type=data3.types[x].node_type;   
  if(data3.types[x].fields.taxonomies.length>0)
  {
@@ -93,6 +94,12 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                 }
 
                                }   
+                        }else if(article_remoteimage.length>0){
+                            if(mainmenu[article_remoteimage] !=undefined){
+                                if(mainmenu[article_remoteimage].length>0){
+                                    bodeImage=mainmenu[article_remoteimage][0].uri
+                                }
+                            }
                         }
                     if(mainmenu[article_category] !=undefined)
                        {
