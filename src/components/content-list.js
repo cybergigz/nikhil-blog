@@ -11,10 +11,8 @@ import ScrollAnimation from 'react-animate-on-scroll';
 
 import "animate.css/animate.min.css";
 
-import { processContentListApi } from "./drupal-util";
 
-
-class category extends Component {
+class ContentList extends Component {
     constructor(props)
     {
         super(props);
@@ -235,4 +233,4 @@ function GetParameterValues(param) {
 function replce_name(str){
     return  str.replace(/%20/g, " ");
 }
-export default category;
+export default ContentList;
