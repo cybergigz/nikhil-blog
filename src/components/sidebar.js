@@ -3,6 +3,8 @@ import {all_js_posts,setting_api} from './../config/config';
 
 import { Link } from "react-router-dom";
 
+import ContentListBlock from "./content-list-block.js";
+
 
 
 
@@ -162,31 +164,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                     </div>
                                 </div>
                                 <div className="sidebar-box">
-                                    <h3 className="heading">Popular Posts</h3>
-                                    <div className="post-entry-sidebar">
-                                        <ul>
-                        {this.state.blogs.map((item,index) => (
-               <li key={index}>
-                                                <Link to={"Blog-Single?id="+item.nid}>
-                         { (item.image!=null)?
-                                                    <img src={item.image} style={{height: "61px"}} alt="Image placeholder"
-                                                         className="mr-4"/>
-                                                               :<span></span>
-}
-                                                        <div className="text">
-                                                            <h4>{item.title}</h4>
-                                                            <div className="post-meta">
-                                                                <span className="mr-2">{item.date} </span> 
-                                                                <span className="ml-2"><span
-                                                                    className="fa fa-comments"></span> 3</span>
-                                                            </div>
-                                                        </div>
-                                                </Link>
-                                            </li>
-))}
-                                         
-                                        </ul>
-                                    </div>
+                                    <ContentListBlock/>
                                 </div>
 
                                 <div className="sidebar-box">
