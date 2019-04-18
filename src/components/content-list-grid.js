@@ -2,37 +2,42 @@ import React, { Component } from "react";
 import Footer from "./footer.js";
 import Header from "./header.js";
 import Sidebar from "./sidebar.js";
-
-import { Link } from "react-router-dom";
-
 import { Animated } from "react-animated-css";
-import { list_of_category_type, setting_api } from "./../config/config";
-import ScrollAnimation from "react-animate-on-scroll";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
+import ScrollAnimation from "react-animate-on-scroll";
+import { all_posts, category_type, setting_api } from "./../config/config";
+import OwlCarousel, { Options } from "react-owl-carousel";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
 import "animate.css/animate.min.css";
 
 import { processContentListApi } from "./drupal-util";
 
-class ContentList extends Component {
-  constructor(props) {
-    super(props);
-  }
+class ContentListGrid extends Component {
   state = {
-    name: "",
+    type: [],
     blogs: [
       {
         nid: 0,
+        typenameid: 0,
+        typeId: "",
         title: "",
         image: "",
-        date: ""
+        date: "",
+        type: ""
       }
     ],
     blogsPager: [
       {
         nid: 0,
+        typenameid: 0,
+        typeId: "",
         title: "",
         image: "",
-        date: ""
+        date: "",
+        type: ""
       }
     ],
 
@@ -42,10 +47,14 @@ class ContentList extends Component {
     pager: { count: "", pages: 0, items_per_page: 0, current_page: 0 }
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.pageChange({ index: 0 });
   };
   componentDidUpdate = () => {
+    var dotsList = document.getElementsByClassName("owl-dot");
+    for (var i = 0; i < dotsList.length; i++) {
+      dotsList[i].firstElementChild.style.display = "none";
+    }
     var index = this.state.pageSelected;
     var pagerListSelected = document.getElementsByClassName(
       "pagerclass" + (index + 1)
@@ -55,8 +64,8 @@ class ContentList extends Component {
     }
     window.scrollTo(0, 0);
   };
+
   pageChange = index => {
-    let itemPerPage = this.state.itemPerPage;
     this.setState({ pageSelected: index.index });
     var pagerList = document.getElementsByClassName("pagerclass");
     for (var i = 0; i < pagerList.length; i++) {
@@ -81,21 +90,15 @@ class ContentList extends Component {
     }
   };
   fetchDataAPI2 = page_num => {
+    this.setState({ type: [] });
     let mainmenu = [],
       mainmenustate = [];
-    var xId = GetParameterValues("id");
-    var xname = replce_name(GetParameterValues("name"));
-    if (xId == null) {
-      window.location.href = "/";
-    }
-    this.setState({ name: xname });
-    fetch(list_of_category_type(xId, page_num))
+    fetch(all_posts(page_num))
       .then(blob => blob.json())
       .then(data => {
         if (data.results.length == 0) {
           window.location.href = "/";
         }
-
         this.setState({ itemPerPage: data.pager.items_per_page });
         this.setState({ pager: data.pager });
         mainmenu = data.results;
@@ -104,8 +107,37 @@ class ContentList extends Component {
           .then(data3 => {
             var processedData = processContentListApi(data3, mainmenu);
             this.setState(processedData);
+
+            this.getype();
           });
       });
+  };
+
+  getype = () => {
+    let menutype = [];
+    // this.pageChange({index:0});
+    var item = this.state.blogs;
+    var mainObject = {},
+      promises = [];
+    var myUrl = "";
+
+    item.forEach(function(singleElement) {
+      myUrl = singleElement.typeId;
+      promises.push(axios.get(category_type(myUrl)));
+    });
+
+    axios.all(promises).then(results => {
+      results.forEach(response => {
+        console.log(response.data.tid[0].value);
+        if (response.data.name != undefined) {
+          menutype.push(response.data.name[0].value);
+        } else {
+          menutype.push("");
+        }
+
+        this.setState({ type: menutype });
+      });
+    });
   };
 
   render() {
@@ -118,42 +150,41 @@ class ContentList extends Component {
         ArrayOfPage.push(x);
       }
     }
+
     return (
       <div className="col-md-12 col-lg-8 main-content">
-        <div className="row mb-5 mt-5">
-          <div className="col-md-12">
-            {this.state.blogs.map((item, index) => (
-              <ScrollAnimation key={index} animateIn="fadeIn">
-                <div className="post-entry-horzontal">
-                  <Link
-                    to={"Blog-Single?id=" + item.nid}
-                    style={{ width: "100%" }}
-                  >
-                    {item.image != null ? (
-                      <div
-                        className="image"
-                        style={{
-                          backgroundImage: "url(" + item.image + ")"
-                        }}
-                      />
-                    ) : (
-                      <span />
-                    )}
-                    <span className="text">
-                      <div className="post-meta">
-                        <span className="category"> {this.state.name} </span>
-                        <span className="mr-2">{item.date} </span>
-                        <span className="ml-2">
-                          <span className="fa fa-comments" /> 3
-                        </span>
-                      </div>
-                      <h2>{item.title}</h2>
-                    </span>
-                  </Link>
-                </div>
+        <div className="row">
+          {this.state.blogs.map((item, index) => (
+            <div key={index} className="col-md-6">
+              <ScrollAnimation animateIn="fadeIn">
+                <Link
+                  to={"/Blog-Single?id=" + item.nid}
+                  className="blog-entry"
+                  data-animate-effect="fadeIn"
+                >
+                  {item.image.length > 0 ? (
+                    <img
+                      src={item.image}
+                      alt="Image placeholder"
+                      style={{ width: "100%", height: "250px" }}
+                    />
+                  ) : (
+                    <span />
+                  )}
+                  <div className="blog-content-body">
+                    <div className="post-meta">
+                      <span className="category">{this.state.type[index]}</span>
+                      <span className="mr-2">{item.date} </span>
+                      <span className="ml-2">
+                        <span className="fa fa-comments" /> 3
+                      </span>
+                    </div>
+                    <h2>{item.title}</h2>
+                  </div>
+                </Link>
               </ScrollAnimation>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         <div className="row">
@@ -192,18 +223,5 @@ class ContentList extends Component {
     );
   }
 }
-function GetParameterValues(param) {
-  var url = window.location.href
-    .slice(window.location.href.indexOf("?") + 1)
-    .split("&");
-  for (var i = 0; i < url.length; i++) {
-    var urlparam = url[i].split("=");
-    if (urlparam[0] == param) {
-      return urlparam[1];
-    }
-  }
-}
-function replce_name(str) {
-  return str.replace(/%20/g, " ");
-}
-export default ContentList;
+
+export default ContentListGrid;

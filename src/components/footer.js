@@ -23,7 +23,7 @@ class Footer extends Component {
                             <div className="col-md-6 ml-auto">
                                 <div className="row">
                                     <div className="col-md-7">
-                                        <ContentListBlock/>
+                                        <ContentListBlock tid="85" title="Series" />
                                     </div>
                                     <div className="col-md-1"></div>
 
