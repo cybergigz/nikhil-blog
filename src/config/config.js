@@ -22,6 +22,6 @@ export const all_posts=(pagenum)=>{
     return "https://one-drupal-demo.technikh.com/onedrupal/api/v1/content/all?page="+pagenum+"";
 }
 
-export const category_posts(tid)=>{
+export const category_posts=(tid)=>{
     return "https://one-drupal-demo.technikh.com/onedrupal/api/v1/content/all/"+tid+"";
 }

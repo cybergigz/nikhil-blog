@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { all_js_posts, setting_api } from "./../config/config";
+import { category_posts, setting_api } from "./../config/config";
 import { Link } from "react-router-dom";
 import { processContentListApi } from "./drupal-util";
 
