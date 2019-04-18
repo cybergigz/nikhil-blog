@@ -1,4 +1,4 @@
-const processContentListApi = (data3, mainmenu) => {
+const processContentListApi = (data3, mainmenu, limit = 0) => {
   let mainmenustate = [];
   var article_body = "",
     article_image = "",
@@ -72,14 +72,14 @@ const processContentListApi = (data3, mainmenu) => {
         };
         //console.log(typeId);
         mainmenustate.push(blogs);
-        if (mainmenustate.length === 3) {
+        if (limit > 0 && mainmenustate.length >= limit) {
           break;
         }
       }
     }
-    if (mainmenustate.length === 3) {
+    /*if (limit > 0 && mainmenustate.length >= limit) {
       break;
-    }
+    }*/
   }
 
   //this.setState({blogs:mainmenustate});

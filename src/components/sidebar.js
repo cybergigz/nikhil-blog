@@ -38,10 +38,10 @@ class Sidebar extends Component {
                                     </div>
                                 </div>
                                 <div className="sidebar-box">
-                                    <ContentListBlock tid="85" title="Series" />
+                                    <ContentListBlock tid="85" title="Series" limit="3" />
                                 </div>
                                 <div className="sidebar-box">
-                                    <ContentListBlock tid="81" title="Movies" />
+                                    <ContentListBlock tid="81" title="Movies" limit="4" />
                                 </div>
 
                                 <div className="sidebar-box">

@@ -24,7 +24,7 @@ class ContentListBlock extends Component {
         fetch(setting_api)
           .then(blob3 => blob3.json())
           .then(data3 => {
-            var processedData = processContentListApi(data3, mainmenu);
+            var processedData = processContentListApi(data3, mainmenu, this.props.limit);
             this.setState(processedData);
           });
       });
