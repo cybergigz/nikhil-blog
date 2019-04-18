@@ -17,7 +17,7 @@ class ContentListBlock extends Component {
 
   componentWillMount = () => {
     let mainmenu = [];
-    fetch(all_js_posts)
+    fetch(category_posts(this.props.tid))
       .then(blob => blob.json())
       .then(data => {
         mainmenu = data.results;
@@ -33,7 +33,7 @@ class ContentListBlock extends Component {
   render() {
     return (
       <React.Fragment>
-        <h3 className="heading">Popular Posts</h3>
+        <h3 className="heading">{this.props.title}</h3>
         <div className="post-entry-sidebar">
           <ul>
             {this.state.blogs.map((item, index) => (
