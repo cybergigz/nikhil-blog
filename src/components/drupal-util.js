@@ -1,3 +1,5 @@
+import { default_image } from "./../config/config";
+
 const processContentListApi = (data3, mainmenu, limit = 0) => {
   let mainmenustate = [];
   var article_body = "",
@@ -58,6 +60,11 @@ const processContentListApi = (data3, mainmenu, limit = 0) => {
             }
           }
         }
+        if(!bodeImage){
+			if(default_image){
+				bodeImage = default_image;
+			}
+		}
         if (mainmenu[i][article_category] != undefined) {
           if (mainmenu[i][article_category].length > 0) {
             typeId = mainmenu[i][article_category][0].target_id;
@@ -68,6 +75,7 @@ const processContentListApi = (data3, mainmenu, limit = 0) => {
           nid: mainmenu[i].nid[0].value,
           title: mainmenu[i].title[0].value,
           image: bodeImage,
+          typeId: typeId,
           date: fulldate
         };
         //console.log(typeId);

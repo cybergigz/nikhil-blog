@@ -6,7 +6,7 @@ import Sidebar from "./sidebar.js";
 import { Link } from "react-router-dom";
 
 import { Animated } from "react-animated-css";
-import { list_of_category_type, setting_api } from "./../config/config";
+import { list_of_category_type, list_of_content_search, setting_api } from "./../config/config";
 import ScrollAnimation from "react-animate-on-scroll";
 
 import "animate.css/animate.min.css";
@@ -83,17 +83,27 @@ class ContentList extends Component {
   fetchDataAPI2 = page_num => {
     let mainmenu = [],
       mainmenustate = [];
-    var xId = GetParameterValues("id");
-    var xname = replce_name(GetParameterValues("name"));
-    if (xId == null) {
-      window.location.href = "/";
+    var xname = this.props.title;
+    var fetchURL = "";
+    //console.log(this.props);
+    if (this.props.tid){
+		var xId = this.props.tid;
+
+		fetchURL = list_of_category_type(xId, page_num);
+	}else if (this.props.search){
+		fetchURL = list_of_content_search(this.props.search, page_num);
+	} else {
+      //window.location.href = "/";
     }
+    console.log("fetchURL"+fetchURL);
     this.setState({ name: xname });
-    fetch(list_of_category_type(xId, page_num))
+    if(fetchURL){
+    fetch(fetchURL)
       .then(blob => blob.json())
       .then(data => {
+		this.setState({ resultsLength: data.results.length });
         if (data.results.length == 0) {
-          window.location.href = "/";
+          //window.location.href = "/";
         }
 
         this.setState({ itemPerPage: data.pager.items_per_page });
@@ -106,6 +116,7 @@ class ContentList extends Component {
             this.setState(processedData);
           });
       });
+	}
   };
 
   render() {
@@ -120,6 +131,7 @@ class ContentList extends Component {
     }
     return (
       <div className="col-md-12 col-lg-8 main-content">
+		<h3> {this.state.resultsLength} results</h3>
         <div className="row mb-5 mt-5">
           <div className="col-md-12">
             {this.state.blogs.map((item, index) => (
@@ -129,7 +141,7 @@ class ContentList extends Component {
                     to={"Blog-Single?id=" + item.nid}
                     style={{ width: "100%" }}
                   >
-                    {item.image != null ? (
+                    {((item.image != null) && item.image) ? (
                       <div
                         className="image"
                         style={{
@@ -143,9 +155,7 @@ class ContentList extends Component {
                       <div className="post-meta">
                         <span className="category"> {this.state.name} </span>
                         <span className="mr-2">{item.date} </span>
-                        <span className="ml-2">
-                          <span className="fa fa-comments" /> 3
-                        </span>
+                        
                       </div>
                       <h2>{item.title}</h2>
                     </span>
@@ -192,18 +202,5 @@ class ContentList extends Component {
     );
   }
 }
-function GetParameterValues(param) {
-  var url = window.location.href
-    .slice(window.location.href.indexOf("?") + 1)
-    .split("&");
-  for (var i = 0; i < url.length; i++) {
-    var urlparam = url[i].split("=");
-    if (urlparam[0] == param) {
-      return urlparam[1];
-    }
-  }
-}
-function replce_name(str) {
-  return str.replace(/%20/g, " ");
-}
+
 export default ContentList;

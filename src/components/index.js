@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
+import ContentListBlockSlideshow from "./content-list-block-slideshow.js";
+import ContentListBlockFeaturedGrid from "./content-list-block-featured-grid.js";
 import Sidebar from "./sidebar.js";
 import {Animated} from "react-animated-css";
 import { Link } from "react-router-dom";
@@ -8,10 +10,8 @@ import  axios from "axios";
 
 
 import ScrollAnimation from 'react-animate-on-scroll';
-import {all_posts,category_type,setting_api} from './../config/config';
-import OwlCarousel, { Options } from 'react-owl-carousel';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
+import {homepage_featured_tid,all_posts,category_type,setting_api} from './../config/config';
+
 import "animate.css/animate.min.css";
 
 import { processContentListApi } from "./drupal-util";
@@ -23,32 +23,6 @@ import ContentListGrid from "./content-list-grid.js";
 
 class index extends Component {
     render() {      
-        const options = {
-            loop:true,
-            autoplay: true,
-            margin:10,
-            animateOut: 'fadeOut',
-            animateIn: 'fadeIn',
-            nav:true,
-            dots:true,
-            autoplayHoverPause: true,
-            items: 1,
-            navText : ["<span class='ion-chevron-left'></span>","<span class='ion-chevron-right'></span>"],
-            responsive:{
-                0:{
-                    items:1,
-                    nav:false
-                },
-                600:{
-                    items:1,
-                    nav:false
-                },
-                1000:{
-                    items:1,
-                    nav:true
-                }
-            }
-        };
         return (
             <div>
                 <Header/>
@@ -56,108 +30,13 @@ class index extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12">
-                                <OwlCarousel className="owl-carousel owl-theme home-slider"
-                                             {...options}
-
-
-                                >
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_1.jpg)'}}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_2.jpg)' }}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="blog-single.html"
-                                           className="a-block d-flex align-items-center height-lg"
-                                           style={{backgroundImage: 'url(./images/img_3.jpg)' }}>
-                                            <div className="text half-to-full">
-                                                <div className="post-meta">
-                                                    <span className="category">Lifestyle</span>
-                                                    <span className="mr-2">March 15, 2018 </span> &bullet;
-                                                    <span className="ml-2"><span
-                                                        className="fa fa-comments"></span> 3</span>
-                                                </div>
-                                                <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem
-                                                    nobis, ut dicta eaque ipsa laudantium!</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </OwlCarousel>
+                              {/*   <ContentListBlockSlideshow tid={homepage_featured_tid} limit="4" /> */}
                               
 
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-md-6 col-lg-4">
-                                <a href="blog-single.html" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(./images/img_2.jpg)'}} >
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">Lifestyle</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-md-6 col-lg-4">
-                                <a href="blog-single.html" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(./images/img_3.jpg)'}}>
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">Travel</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-md-6 col-lg-4">
-                                <a href="blog-single.html" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(./images/img_4.jpg)' }}>
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">Food</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <ContentListBlockFeaturedGrid tid={homepage_featured_tid} limit="3" />
+                        
                     </div>
 
 
@@ -167,7 +46,7 @@ class index extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-md-6">
-                                <h2 className="mb-4">Lifestyle Category</h2>
+                                <h2 className="mb-4">All Content</h2>
                             </div>
                         </div>
                         <div className="row blog-entries">

@@ -7,8 +7,9 @@ import ContentList from "./content-list.js";
 class category extends Component {
 
     render() {
-        const xname =replce_name(GetParameterValues('name'));
-        const xId = GetParameterValues("id");
+        const queryString = require('query-string');
+        const xname = queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).name
+        const xId = queryString.parse(this.props.location.search, { ignoreQueryPrefix: true }).id
         return (
             <div>
 			  <Header />
@@ -21,7 +22,7 @@ class category extends Component {
 			        </div>
 			      </div>
 			      <div className="row blog-entries">
-					<ContentList tid="{xId}" />
+					<ContentList tid={xId} title={xname} />
 			        <Sidebar />
 			      </div>
 			    </div>
@@ -32,16 +33,5 @@ class category extends Component {
         );
     }
 }
-function GetParameterValues(param) {
-    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < url.length; i++) {
-        var urlparam = url[i].split('=');
-        if (urlparam[0] == param) {
-            return urlparam[1];
-        }
-    }
-}
-function replce_name(str){
-    return  str.replace(/%20/g, " ");
-}
+
 export default category;

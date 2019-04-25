@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
 import ContentListBlock from "./content-list-block.js";
+import ContentListBlockTitles from "./content-list-block-title.js";
+import {footer_block1_title,footer_block2_title,footer_block1_tid,footer_block2_tid,secondary_menu_tid,secondary_menu_title,twitter_handle,facebook_handle} from './../config/config';
 
 class Footer extends Component {
     
@@ -11,48 +13,34 @@ class Footer extends Component {
                     <div className="container">
                         <div className="row mb-5">
                             <div className="col-md-4">
-                                <h3>Paragraph</h3>
-                                <p>
-                                    <img src="images/img_1.jpg" alt="Image placeholder" className="img-fluid"/>
-                                </p>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi, accusantium optio
-                                    unde perferendis eum illum voluptatibus dolore tempora, consequatur minus asperiores
-                                    temporibus reprehenderit.</p>
+								<ContentListBlock tid={footer_block1_tid} title={footer_block1_title} limit="3" />
                             </div>
                             <div className="col-md-6 ml-auto">
                                 <div className="row">
                                     <div className="col-md-7">
-                                        <ContentListBlock tid="85" title="Series" limit="3" />
+                                        <ContentListBlock tid={footer_block2_tid} title={footer_block2_title} limit="3" />
                                     </div>
                                     <div className="col-md-1"></div>
 
                                     <div className="col-md-4">
 
                                         <div className="mb-5">
-                                            <h3>Quick Links</h3>
-                                            <ul className="list-unstyled">
-                                                <li><a href="#">About Us</a></li>
-                                                <li><a href="#">Travel</a></li>
-                                                <li><a href="#">Adventure</a></li>
-                                                <li><a href="#">Courses</a></li>
-                                                <li><a href="#">Categories</a></li>
-                                            </ul>
+											<ContentListBlockTitles tid={secondary_menu_tid} title={secondary_menu_title} limit="5" />
                                         </div>
 
                                         <div className="mb-5">
                                             <h3>Social</h3>
                                             <ul className="list-unstyled footer-social">
-                                                <li><a href="#"><span className="fa fa-twitter"></span> Twitter</a></li>
-                                                <li><a href="#"><span className="fa fa-facebook"></span> Facebook</a>
-                                                </li>
-                                                <li><a href="#"><span className="fa fa-instagram"></span> Instagram</a>
-                                                </li>
-                                                <li><a href="#"><span className="fa fa-vimeo"></span> Vimeo</a></li>
-                                                <li><a href="#"><span className="fa fa-youtube-play"></span> Youtube</a>
-                                                </li>
-                                                <li><a href="#"><span className="fa fa-snapchat"></span> Snapshot</a>
-                                                </li>
+                                            {twitter_handle != "" && (
+                    <li><a href={twitter_handle}>
+                      <span className="fa fa-twitter" /> Twitter
+                    </a></li>
+                  )}
+                  {facebook_handle != "" && (
+                    <li><a href={facebook_handle}>
+                      <span className="fa fa-facebook" /> Facebook
+                    </a></li>
+                  )}
                                             </ul>
                                         </div>
                                     </div>

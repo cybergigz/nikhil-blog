@@ -122,8 +122,12 @@ class ContentListGrid extends Component {
     var myUrl = "";
 
     item.forEach(function(singleElement) {
+		//console.log(singleElement);
       myUrl = singleElement.typeId;
-      promises.push(axios.get(category_type(myUrl)));
+      //console.log("myUrl "+myUrl);
+      if(myUrl){
+        promises.push(axios.get(category_type(myUrl)));
+	  }
     });
 
     axios.all(promises).then(results => {
@@ -175,9 +179,7 @@ class ContentListGrid extends Component {
                     <div className="post-meta">
                       <span className="category">{this.state.type[index]}</span>
                       <span className="mr-2">{item.date} </span>
-                      <span className="ml-2">
-                        <span className="fa fa-comments" /> 3
-                      </span>
+                    
                     </div>
                     <h2>{item.title}</h2>
                   </div>

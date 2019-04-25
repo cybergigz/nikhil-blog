@@ -6,7 +6,7 @@ import contact from "./components/contact";
 import about from "./components/about";
 import blogsingle from "./components/blog-single"
 import category from "./components/category";
-
+import search from "./components/search";
 
 
 
@@ -24,7 +24,7 @@ class Routes extends React.Component {
                 <Route exact path="/about" component={about} />
                 <Route exact path="/Blog-Single" component={blogsingle} />
                 <Route  path="/category" component={category} />
-
+				<Route  path="/search" component={search} />
 
 
 

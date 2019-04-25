@@ -3,14 +3,12 @@ import { category_posts, setting_api } from "./../config/config";
 import { Link } from "react-router-dom";
 import { processContentListApi } from "./drupal-util";
 
-class ContentListBlock extends Component {
+class ContentListBlockTitles extends Component {
   state = {
     blogs: [
       {
         nid: 0,
-        title: "",
-        image: "",
-        date: ""
+        title: ""
       }
     ]
   };
@@ -34,36 +32,18 @@ class ContentListBlock extends Component {
     return (
       <React.Fragment>
         <h3 className="heading">{this.props.title}</h3>
-        <div className="post-entry-sidebar">
-          <ul>
+          <ul className="list-styled">
             {this.state.blogs.map((item, index) => (
               <li key={index}>
                 <Link to={"Blog-Single?id=" + item.nid}>
-                  {((item.image != null) && item.image) ? (
-                    <img
-                      src={item.image}
-                      style={{ height: "61px" }}
-                      alt="Image placeholder"
-                      className="mr-4"
-                    />
-                  ) : (
-                    <span />
-                  )}
-                  <div className="text">
-                    <h4>{item.title}</h4>
-                    <div className="post-meta">
-                      <span className="mr-2">{item.date} </span>
-                      
-                    </div>
-                  </div>
+                  {item.title}
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
       </React.Fragment>
     );
   }
 }
 
-export default ContentListBlock;
+export default ContentListBlockTitles;
