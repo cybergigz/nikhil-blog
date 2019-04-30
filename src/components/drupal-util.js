@@ -8,15 +8,16 @@ const processContentListApi = (data3, mainmenu, limit = 0) => {
     article_category = "",
     article_type = "";
 
-  for (var x = 0; x < data3.types.length; x++) {
-    article_body = data3.types[x].fields.body;
-    article_image = data3.types[x].fields.image;
-    article_remoteimage = data3.types[x].fields.remote_image;
-    article_type = data3.types[x].node_type;
-    if (data3.types[x].fields.taxonomies.length > 0) {
-      article_category = data3.types[x].fields.taxonomies[0].field;
-    }
-    for (var i = 0; i < mainmenu.length; i++) {
+  for (var i = 0; i < mainmenu.length; i++) {
+
+    for (var x = 0; x < data3.types.length; x++) {
+	    article_body = data3.types[x].fields.body;
+	    article_image = data3.types[x].fields.image;
+	    article_remoteimage = data3.types[x].fields.remote_image;
+	    article_type = data3.types[x].node_type;
+	    if (data3.types[x].fields.taxonomies.length > 0) {
+	      article_category = data3.types[x].fields.taxonomies[0].field;
+	    }
       //image, typeId
       if (mainmenu[i].type[0].target_id === article_type) {
         var typeId = "",
@@ -53,7 +54,8 @@ const processContentListApi = (data3, mainmenu, limit = 0) => {
               bodeImage = mainmenu[i][article_image][0].url;
             }
           }
-        } else if (article_remoteimage.length > 0) {
+        }
+        if (!bodeImage && article_remoteimage.length > 0) {
           if (mainmenu[i][article_remoteimage] != undefined) {
             if (mainmenu[i][article_remoteimage].length > 0) {
               bodeImage = mainmenu[i][article_remoteimage][0].uri;
@@ -81,8 +83,9 @@ const processContentListApi = (data3, mainmenu, limit = 0) => {
         //console.log(typeId);
         mainmenustate.push(blogs);
         if (limit > 0 && mainmenustate.length >= limit) {
-          break;
+          return { blogs: mainmenustate };
         }
+        break;
       }
     }
     /*if (limit > 0 && mainmenustate.length >= limit) {

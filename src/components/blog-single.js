@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import Footer from "./footer.js";
 import Header from "./header.js";
 import Sidebar from "./sidebar.js";
+import ContentListBlockFeaturedGrid from "./content-list-block-featured-grid.js";
 import {Animated} from "react-animated-css";
 import {category_details} from "../config/config";
-import {category_type,setting_api} from "../config/config";
+import {homepage_featured_tid,category_type,setting_api} from "../config/config";
 var getYouTubeID = require('get-youtube-id');
 
 
@@ -60,6 +61,7 @@ class blogsingle extends Component {
      article_body=data3.types[x].fields.body;
     article_image=data3.types[x].fields.image;
     article_remoteimage=data3.types[x].fields.remote_image;
+    console.log(article_remoteimage);
      article_type=data3.types[x].node_type;   
  if(data3.types[x].fields.taxonomies.length>0)
  {
@@ -94,7 +96,8 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
                                 }
 
                                }   
-                        }else if(article_remoteimage.length>0){
+                        }
+                        if(!bodeImage && article_remoteimage.length>0){
                             if(mainmenu[article_remoteimage] !=undefined){
                                 if(mainmenu[article_remoteimage].length>0){
                                     bodeImage=mainmenu[article_remoteimage][0].uri
@@ -241,7 +244,7 @@ if(data2.name !=undefined){
                                 </div>
 
 
-                                <div className="pt-5">
+                                {/*<div className="pt-5">
                                     <h3 className="mb-5">6 Comments</h3>
                                     <ul className="comment-list">
                                         <li className="comment">
@@ -375,7 +378,7 @@ if(data2.name !=undefined){
 
                                         </form>
                                     </div>
-                                </div>
+                                </div> */}
 
                             </div>
 
@@ -392,47 +395,7 @@ if(data2.name !=undefined){
                                 <h2 className="mb-3 ">Related Post</h2>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-md-6 col-lg-4">
-                                <a href="#" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(images/img_2.jpg)'}}>
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">Lifestyle</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-md-6 col-lg-4">
-                                <a href="#" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(images/img_3.jpg)'}}>
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">Travel</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-md-6 col-lg-4">
-                                <a href="#" className="a-block d-flex align-items-center height-md"
-                                   style={{backgroundImage: 'url(images/img_4.jpg)'}}>
-                                    <div className="text">
-                                        <div className="post-meta">
-                                            <span className="category">{this.state.blog.type}</span>
-                                            <span className="mr-2">March 15, 2018 </span> &bullet;
-                                            <span className="ml-2"><span className="fa fa-comments"></span> 3</span>
-                                        </div>
-                                        <h3>There’s a Cool New Way for Men to Wear Socks and Sandals</h3>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <ContentListBlockFeaturedGrid tid={homepage_featured_tid} limit="3" />
                     </div>
 
 

@@ -8,7 +8,7 @@ export  const setting_api = l_domain + "/onedrupal/api/v1/settings";
 
 export const list_of_category_type=(id,pagenum)=>{
 
-    return l_domain + "/onedrupal/api/v1/content/all/"+id+"?page="+pagenum+"";
+    return l_domain + "/onedrupal/api/v1/content/all/all/"+id+"?page="+pagenum+"";
 }
 
 export const list_of_content_search=(keys,pagenum)=>{
