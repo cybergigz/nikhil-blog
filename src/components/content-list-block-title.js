@@ -35,9 +35,9 @@ class ContentListBlockTitles extends Component {
           <ul className="list-styled">
             {this.state.blogs.map((item, index) => (
               <li key={index}>
-                <Link to={"Blog-Single?id=" + item.nid}>
+                <a href={"Blog-Single?id=" + item.nid}>
                   {item.title}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
