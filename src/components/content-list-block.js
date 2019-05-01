@@ -38,7 +38,7 @@ class ContentListBlock extends Component {
           <ul>
             {this.state.blogs.map((item, index) => (
               <li key={index}>
-                <Link to={"Blog-Single?id=" + item.nid}>
+                <a href={"Blog-Single?id=" + item.nid}>
                   {((item.image != null) && item.image) ? (
                     <img
                       src={item.image}
@@ -56,7 +56,7 @@ class ContentListBlock extends Component {
                       
                     </div>
                   </div>
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
